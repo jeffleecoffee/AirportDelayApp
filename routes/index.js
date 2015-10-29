@@ -17,16 +17,17 @@ var Router = (function () {
         router.get('/MapView', function (req, res) {
             res.render('MapView', { title: 'AirTime' });
         });
-        /* GET Userlist page.
-        router.get('/userlist', function(req, res) {
+        /* GET Airport List page. */
+        router.get('/airportlist', function(req, res) {
             var db = req.db;
-                var collection = db.get('usercollection');
-                collection.find({},{},function(e,docs){
-                        res.render('userlist', {
-                                "userlist" : docs
-                                });
-                                });
-                                });
+            var collection = db.get('airports');
+            collection.find({},{},function(e,docs){
+                    res.render('airportlist', {
+                        "airportlist" : docs
+                    });
+                 });
+            });
+        /*
             GET New User page.
             router.get('/newuser', function(req, res) {
                 res.render('newuser', { title: 'Add New User' });
