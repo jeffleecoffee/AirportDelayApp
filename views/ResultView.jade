@@ -2,3 +2,9 @@ block content
   h1= title
   p Results Page
   iframe(width='800', height='166', scrolling='yes', frameborder='yes', src= 'MapView')
+  h1.
+    User List
+  ul
+    each result, result in resultslist
+      li
+        result.code
