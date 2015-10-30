@@ -1,40 +1,45 @@
-class Airport {
-  code: string;
-  name: string;
-  temp: string;
-  wind: string;
+///<reference path='../../types/DefinitelyTyped/node/node.d.ts'/>
+///<reference path='../../types/DefinitelyTyped/express/express.d.ts'/> 
+///<reference path='../../types/DefinitelyTyped/googlemaps/google.maps.d.ts'/> 
+///<reference path='../../types/DefinitelyTyped/google.geolocation/google.geolocation.d.ts'/> 
 
-  constructor(codeInput: string) {
-    this.code = codeInput;
-  }
+module AirportOperations{
+  export class Airport {
+    code: string;
+    name: string;
+    temp: string;
+    wind: string;
 
-  setName(nameInput: string) {
-    this.name = nameInput;
-  }
+    constructor(codeInput: string) {
+      this.code = codeInput;
+    }
 
-  setTemp(tempInput: string) {
-    this.temp = tempInput;
-  }
+    setName(nameInput: string) {
+      this.name = nameInput;
+    }
 
-  setWind(windInput: string) {
-    this.wind = windInput;
-  }
+    setTemp(tempInput: string) {
+      this.temp = tempInput;
+    }
 
-  getCode() {
-    return this.code;
-  }
+    setWind(windInput: string) {
+      this.wind = windInput;
+    }
 
-  getName() {
-    return this.name;
-  }
+    getCode() {
+      return this.code;
+    }
 
-  getTemp() {
-    return this.temp;
-  }
+    getName() {
+      return this.name;
+    }
 
-  getWind() {
-    return this.wind;
-  }
+    getTemp() {
+      return this.temp;
+    }
+
+    getWind() {
+      return this.wind;
+    }
+  }  
 }
-
-export = Airport;
