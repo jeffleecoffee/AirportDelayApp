@@ -14,11 +14,11 @@ module AirportOperations{
     constructor(mapDiv: Element){
       this.name = "AirportMap";
       this.options = {
-        center: new google.maps.LatLng(-25.363,131.044),
-        zoom: 8,
+        center: new google.maps.LatLng(53.83305, -1.66412),
+        zoom: 3,
         MapTypeId: google.maps.MapTypeId.TERRAIN
       };
-      this.map = new google.maps.Map(mapDiv, this.options)
+      this.map = new google.maps.Map(mapDiv, this.options);
     }
 
     getMap(){

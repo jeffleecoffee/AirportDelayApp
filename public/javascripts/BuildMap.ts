@@ -6,10 +6,18 @@
 ///<reference path='./Airport.ts'/> 
 ///<reference path='./AirportMap.ts'/> 
 ///<reference path='./AirportMarker.ts'/> 
+///<reference path='./AirportGeocoder.ts'/>
 
 function initMap() {
+  var airportCodes:Array<string> = [];
+  airportCodes.push("BHM");
+  airportCodes.push("ANC");
+  airportCodes.push("ILG");
+  airportCodes.push("MIA");
+
   var mapCanvas = document.getElementById('map');
   var airportMap = new AirportOperations.AirportMap(mapCanvas);
-  var airportMarker = new AirportOperations.AirportMarker(airportMap);
+  var airportGeocoder = new AirportOperations.AirportGeocoder();
+  airportGeocoder.geocodeAirports(airportCodes,airportMap);
 }
 window.onload = initMap;
