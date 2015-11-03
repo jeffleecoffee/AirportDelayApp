@@ -3,64 +3,76 @@
 
 ///<reference path='./Airport.ts'/> 
 
-var http = require('http');
-var airports = new Array;
-
-
 class ServerCommService {
-	/* To add here: Facebook login and FAA request */
 
-  // Call to FAA and parse the result
-  airportRoutingCall(airCode: string){
-    http.get({
-      host: "services.faa.gov",
-      path: "/airport/status/" + airCode + "?format=application/JSON",},
-      function(res) {
-        res.setEncoding('utf8');
-        var body = ' ';
+    var http = require('http');
+    var airports = new Array;
 
-        // Make body the response of the routing call
-        res.on('data', function(d) {
-          body += d;
-        });
+    	/* To add here: Facebook login and FAA request */
+    constructor(){
+        var express = require('express');
+        var mongo = require('mongodb');
+        var monk = require('monk');
+        var db = monk('localhost:27017/sprint1db');
 
-        // When data ends, parse the response
-        res.on('end', function() {
-          try {
-            var parsed = JSON.parse(body);
-          }
-          catch (err) {
-          	console.error('Unable to parse response as JSON', err);
-          }
+            // FaceBook Login Check
+        function checkIfInDatabase(var id) {
 
-          var newAirport = new AirportOperations.Airport(parsed.IATA);
-          newAirport.setName(parsed.name);
-          var tempWeather = parsed.weather;
-          newAirport.setTemp(tempWeather.temp);
-          newAirport.setWind(tempWeather.wind);
-          airports.push(newAirport);
-        })
+        }
+        function addToDatabase(var id) {
 
 
-        // Routing Call error message
-        .on('error', function(err) {
-          // handle errors with request itself
-          console.error('Error with the request:', err.message);
-        });
+            }
+      // Call to FAA and parse the result
+      airportRoutingCall(airCode: string){
+        http.get({
+          host: "services.faa.gov",
+          path: "/airport/status/" + airCode + "?format=application/JSON",},
+          function(res) {
+            res.setEncoding('utf8');
+            var body = ' ';
 
-      })
-  };
+            // Make body the response of the routing call
+            res.on('data', function(d) {
+              body += d;
+            });
 
-  // Call the routing call for each airport in the list, codeArray is array of string
-  callAirports(codeArray){
-    for (var i =0; i< codeArray.length; i++) {
-      var realThis = this;
-      realThis.airportRoutingCall(codeArray[i]);
+            // When data ends, parse the response
+            res.on('end', function() {
+              try {
+                var parsed = JSON.parse(body);
+              }
+              catch (err) {
+              	console.error('Unable to parse response as JSON', err);
+              }
+
+              var newAirport = new AirportOperations.Airport(parsed.IATA);
+              newAirport.setName(parsed.name);
+              var tempWeather = parsed.weather;
+              newAirport.setTemp(tempWeather.temp);
+              newAirport.setWind(tempWeather.wind);
+              airports.push(newAirport);
+            })
+
+
+            // Routing Call error message
+            .on('error', function(err) {
+              // handle errors with request itself
+              console.error('Error with the request:', err.message);
+            });
+
+          })
+      };
+
+          // Call the routing call for each airport in the list, codeArray is array of string
+        callAirports(codeArray){
+            for (var i =0; i< codeArray.length; i++) {
+              var realThis = this;
+              realThis.airportRoutingCall(codeArray[i]);
+            }
+          };
+
+
+
     }
-  };
-
-  getAirportArray() {
-    return airports;
-  }
-
 }

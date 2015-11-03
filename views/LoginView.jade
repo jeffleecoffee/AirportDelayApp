@@ -39,8 +39,10 @@ html
       });
 
       $('#requestview').bind('click', function() {
+        if () {
+          window.location.href = "/RequestView";  
+        }
         FB.login(handleSessionResponse);
-        window.location.href = "/RequestView";
       });
       
       // handle a session response from any of the auth related calls
