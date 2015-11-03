@@ -6,32 +6,35 @@ html
     p Login Page
     div
       button#login Login
-
       button#logout Logout
       br
       button#requestview Give Me Request
     br
     
     span#user-info
+    br
+    span#user-stat
     span#fb-root
     
     script(src='http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js')
     script(src='http://connect.facebook.net/en_US/all.js')
-    script(src='/../public/javascript/ServerCommService.ts')
+    script(src='/../public/javascripts/ServerCommService.ts')
 
     script.
       // initialize the library with the API key
-      FB.init({ appId:'1646694312239569', cookie: true, xfbml: true, version: 'v2.5' });
+      FB.init({ appId:'1646694312239569', status: true, cookie: true, xfbml: true, version: 'v2.5' });
 
       // fetch the status on load
+      // for viewing my current login status and name
       FB.getLoginStatus(handleSessionResponse);
 
       $('#login').bind('click', function() {
-        FB.login(handleSessionResponse);
+        FB.login(handleSessionResponse);        
         //if this user UID is not in our database add them
-        if (!checkIfInDatabase(response.id)) {
-          addToDatabase(response.id);
-        }
+        // var uid = uidResponse();
+        // if (!checkIfInDatabase(uid)) {
+        //   addToDatabase(uid);
+        // }
       });
       
       $('#logout').bind('click', function() {
@@ -39,10 +42,13 @@ html
       });
 
       $('#requestview').bind('click', function() {
-        if () {
-          window.location.href = "/RequestView";  
+        if (loginStatusReponse() === 'connected') {
+          window.location.href = "/RequestView";
         }
-        FB.login(handleSessionResponse);
+        else {
+          FB.login(handleSessionResponse);
+        }
+
       });
       
       // handle a session response from any of the auth related calls
@@ -50,7 +56,29 @@ html
         FB.api('/me', function(response) {
           console.log(response);
           $('#user-info').html(response.id + ' - ' + response.name);
-      });
+        });
+        FB.getLoginStatus(function(response) {
+          console.log(response);
+          $('#user-stat').html(response.status);
+        });
       }
+      function uidResponse() {
+        var uid = "";
+        FB.api('/me', function(response) {
+          console.log(response);
+          uid = response.status;
+        });
+        return uid;
+      }
+      function loginStatusReponse() {
+        var stat = "";
+        FB.getLoginStatus(function(response) {
+          console.log(response);
+          $('#user-stat').html(response.status);
+          stat = response.status;
+        });
+        return stat;
+      }
+
 
 
