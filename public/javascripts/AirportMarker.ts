@@ -12,11 +12,13 @@ module AirportOperations{
     private marker: any;
     private map: any;
     private latlng: google.maps.LatLng;
+    private position: any;
 
-    constructor(airportMap:AirportMap){
+    constructor(airportMap:AirportMap, position:any){
       this.map = airportMap.getMap();
+      this.position = position
       this.options = {
-        position: new google.maps.LatLng(-25.363,131.044),
+        position: this.position,
         clickable: true,
         map: this.map
       };
