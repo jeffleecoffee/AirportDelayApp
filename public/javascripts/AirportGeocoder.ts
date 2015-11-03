@@ -14,7 +14,6 @@ module AirportOperations{
 
 		constructor(){
 			this.geocoder = new google.maps.Geocoder();
-			/***** this.airports = airports; *****/
 		}
 
 		getGeocoder(){

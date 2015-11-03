@@ -30,7 +30,8 @@ module AirportOperations{
       '</div>'+
       '<h1 id="firstHeading" class="firstHeading">'+ this.airport.getName() +'</h1>'+
       '<div id="bodyContent">'+
-      '<h3>Current Temperature is '+ this.airport.getTemp() +' .</h3>'+
+      '<h3>Current temperature is '+ this.airport.getTemp() +' .</h3>'+
+      '<h3>Current wind speed is '+ this.airport.getWind() +' .</h3>'+
       '</div>'+
       '</div>';
 

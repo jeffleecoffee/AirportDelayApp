@@ -33,5 +33,11 @@ window.onload = function(){
 	airports[1].setTemp("5 Degrees Celcius");
 	airports[2].setTemp("10 Degrees Celcius");
 	airports[3].setTemp("25 Degrees Celcius");
+
+	airports[0].setWind("50 km/h");
+	airports[1].setWind("50 km/h");
+	airports[2].setWind("60 km/h");
+	airports[3].setWind("40 km/h");
+
 	var buildNewMap = new BuildMap(airports);
 };
