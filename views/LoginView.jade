@@ -1,5 +1,56 @@
-block content
-  h1= title
-  p Login Page
-  form#formLogin(name="submit",method="get",action="/RequestView")
-    button#btnSubmit(type="request") Login
+doctype html
+html
+  head
+    h1= title
+  body
+    p Login Page
+    div
+      button#login Login
+
+      button#logout Logout
+      br
+      button#requestview Give Me Request
+    br
+    
+    span#user-info
+    span#fb-root
+    
+    script(src='http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js')
+    script(src='http://connect.facebook.net/en_US/all.js')
+    script(src='/../public/javascript/ServerCommService.ts')
+
+    script.
+      // initialize the library with the API key
+      FB.init({ appId:'1646694312239569', cookie: true, xfbml: true, version: 'v2.5' });
+
+      // fetch the status on load
+      FB.getLoginStatus(handleSessionResponse);
+
+      $('#login').bind('click', function() {
+        FB.login(handleSessionResponse);
+        //if this user UID is not in our database add them
+        if (!checkIfInDatabase(response.id)) {
+          addToDatabase(response.id);
+        }
+      });
+      
+      $('#logout').bind('click', function() {
+        FB.logout(handleSessionResponse);
+      });
+
+      $('#requestview').bind('click', function() {
+        if () {
+          window.location.href = "/RequestView";  
+        }
+        FB.login(handleSessionResponse);
+      });
+      
+      // handle a session response from any of the auth related calls
+      function handleSessionResponse() {
+        FB.api('/me', function(response) {
+          console.log(response);
+          $('#user-info').html(response.id + ' - ' + response.name);
+      });
+      }
+
+
