@@ -1,16 +1,3 @@
-<<<<<<< HEAD
-class ServiceCommService {
-/* To add here: Facebook login and FAA request */
-
-// FaceBook Login Check
-  function checkIfInDatabase(var id) {
-
-  }
-  
-  function addToDatabase(var id) {
-
-  }
-=======
 ///<reference path='../../types/DefinitelyTyped/node/node.d.ts'/>
 ///<reference path='../../types/DefinitelyTyped/express/express.d.ts'/> 
 
@@ -71,6 +58,9 @@ class ServerCommService {
       realThis.airportRoutingCall(codeArray[i]);
     }
   };
->>>>>>> 00ccaf2a1acb3a266d056a3a88c17d0054c73f42
+
+  getAirportArray() {
+    return airports;
+  }
 
 }
