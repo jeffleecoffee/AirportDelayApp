@@ -6,3 +6,13 @@ body {
 a {
   color: #00B7FF;
 }
+
+/* Map Configuration */
+html, body { 
+	height: 100%; margin: 0; padding: 0; 
+}
+
+/* Map Configuration */
+#map { 
+	height: 100%; 
+}
