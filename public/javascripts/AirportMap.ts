@@ -3,8 +3,6 @@
 ///<reference path='../../types/DefinitelyTyped/googlemaps/google.maps.d.ts'/> 
 ///<reference path='../../types/DefinitelyTyped/google.geolocation/google.geolocation.d.ts'/> 
 
-///<reference path='./Airport.ts'/> 
-
 module AirportOperations{
   export class AirportMap{
     public name: string;
