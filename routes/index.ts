@@ -11,14 +11,13 @@ class ViewRouter {
                 return next();
             }
             else{
-                response.redirect('/?loginPrompt=1');
+                response.redirect('/');
             }
         }
         /* GET home page. */
 
         router.get('/', function(req, res, next) {
           res.render('LoginView', { title: 'AirTime', user: req.user });
-          console.log(req.user);
         });
         router.get('/RequestView', checkAuthentication, function(req, res) {
           res.render('RequestView', {title: 'AirTime' });

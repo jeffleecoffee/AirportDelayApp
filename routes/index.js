@@ -17,7 +17,6 @@ var ViewRouter = (function () {
         /* GET home page. */
         router.get('/', function (req, res, next) {
             res.render('LoginView', { title: 'AirTime', user: req.user });
-            console.log(req.user);
         });
         router.get('/RequestView', checkAuthentication, function (req, res) {
             res.render('RequestView', { title: 'AirTime' });
