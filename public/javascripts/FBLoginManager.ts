@@ -5,54 +5,32 @@ class FBLoginManager {
 
   constructor(){
     var express = require('express');
-    var path = require('path');
-    var favicon = require('serve-favicon');
-    var logger = require('morgan');
-    var cookieParser = require('cookie-parser');
-    var bodyParser = require('body-parser');
     var mongo = require('mongodb');
     var monk = require('monk');
     var db = monk('localhost:27017/sprint1db');
 
 
-    var fbloginmanager = express.FBLoginManager();
-
-        // FaceBook Login Check
-    function checkIfInDatabase(id: number) {
-      return true;
+    // FaceBook Login Check
+    var collection = db.get('users');
+    var allUsers = db.collection.find();
+    function checkIfInDatabaseAndAdd(stringId: string) {
+      var uid = parseInt(stringId);
+      var alreadyUser = false;
+      while (allUsers.hasNext()) {
+        var user = allUsers.next();
+        if (uid === user) {
+          alreadyUser = true;
+        }
+      }
+      if (alreadyUser == false) {
+        addToDatabase(stringId);
+      }
     }
-    function addToDatabase(id: number) {
-      return;
+    function addToDatabase(stringId: string) {
+      db.collection.insert({
+          "uid" : stringId
+      })
     }
-
-    // //POST to Add User Service 
-    // router.post('/adduser', function(req, res) {
-
-    // // Set our internal DB variable
-    // var db = req.db;
-
-    // // Get our form values. These rely on the "name" attributes
-    // var user = new User(req.body.username,req.body.useremail);
-
-    // // Set our collection
-    // var collection = db.get('usercollection');
-
-    // // Submit to the DB
-    // collection.insert({
-    //     "username" : user.getName(),
-    //     "email" : user.getEmail(),
-    // }, function (err, doc) {
-    //     if (err) {
-    //         // If it failed, return error
-    //         res.send("There was a problem adding the information to the database.");
-    //     }
-    //     else {
-    //         // And forward to success page
-    //         res.redirect("userlist");
-    //     }
-    // });
-
-
 
     module.exports = fbloginmanager;
   }
