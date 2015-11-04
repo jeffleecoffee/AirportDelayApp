@@ -10,6 +10,7 @@ html
       br
       button#requestview Give Me Request
     br
+    a(class='button', href='/auth/facebook') FB
     
     span#user-info
     br
@@ -18,8 +19,6 @@ html
     
     script(src='http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js')
     script(src='http://connect.facebook.net/en_US/all.js')
-    script
-      include ./../public/javascripts/FBLoginManager.js
 
     script.
       // initialize the library with the API key
@@ -29,13 +28,11 @@ html
       // for viewing my current login status and name
       FB.getLoginStatus(handleSessionResponse);
 
+
       $('#login').bind('click', function() {
         FB.login(handleSessionResponse);        
         //if this user UID is not in our database add them
-        // var uid = uidResponse();
-        // if (!checkIfInDatabase(uid)) {
-        //   addToDatabase(uid);
-        // }
+
       });
       
       $('#logout').bind('click', function() {
@@ -67,7 +64,7 @@ html
         var uid = "";
         FB.api('/me', function(response) {
           console.log(response);
-          uid = response.status;
+          uid = response.id;
         });
         return uid;
       }
@@ -79,6 +76,9 @@ html
           stat = response.status;
         });
         return stat;
+      }
+      function saveUser() {
+
       }
 
 

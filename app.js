@@ -8,12 +8,14 @@ var Application = (function () {
         var logger = require('morgan');
         var cookieParser = require('cookie-parser');
         var bodyParser = require('body-parser');
+        var passport = require('passport');
         // New Code
         var mongo = require('mongodb');
         var monk = require('monk');
         var db = monk('localhost:27017/sprint1db');
         var routes = require('./routes/index');
-        //var users = require('./routes/users');
+        var users = require('./routes/users');
+        var auth = require('./routes/auth');
         var app = express();
         // view engine setup
         app.set('views', path.join(__dirname, 'views'));
@@ -24,6 +26,13 @@ var Application = (function () {
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(cookieParser());
+        app.use(require('express-session')({
+            secret: 'keyboard cat',
+            resave: false,
+            saveUninitialized: false
+        }));
+        app.use(passport.initialize());
+        app.use(passport.session());
         app.use(express.static(path.join(__dirname, 'public')));
         // Make our db accessible to our router
         app.use(function (req, res, next) {
@@ -31,7 +40,8 @@ var Application = (function () {
             next();
         });
         app.use('/', routes);
-        //app.use('/users', users);
+        app.use('/users', users);
+        app.use('/auth', auth);
         /// catch 404 and forwarding to error handler
         app.use(function (req, res, next) {
             var err = new Error('Not Found');

@@ -1,24 +1,40 @@
 ///<reference path='../../types/DefinitelyTyped/node/node.d.ts'/>
 ///<reference path='../../types/DefinitelyTyped/express/express.d.ts'/> 
 
-///<reference path='./Airport.ts'/> 
-
 class FBLoginManager {
 
-        /* To add here: Facebook login and FAA request */
-    constructor(){
-        var express = require('express');
-        var mongo = require('mongodb');
-        var monk = require('monk');
-        var db = monk('localhost:27017/sprint1db');
+  constructor(){
+    var express = require('express');
+    var passport = require('passport');
+    var passportfb = require('passport-facebook');
+    var mongo = require('mongodb');
+    var monk = require('monk');
+    var db = monk('localhost:27017/sprint1db');
 
-            // FaceBook Login Check
-        function checkIfInDatabase(var id) {
 
+    // FaceBook Login Check
+    var collection = db.get('users');
+    var allUsers = db.collection.find();
+    function checkIfInDatabaseAndAdd(stringId: string) {
+      var uid = parseInt(stringId);
+      var alreadyUser = false;
+      while (allUsers.hasNext()) {
+        var user = allUsers.next();
+        if (uid === user) {
+          alreadyUser = true;
         }
-        function addToDatabase(var id) {
-
-
-            }
+      }
+      if (alreadyUser == false) {
+        addToDatabase(stringId);
+      }
     }
+    function addToDatabase(stringId: string) {
+      db.collection.insert({
+          "uid" : stringId
+      })
+    }
+
+    module.exports = fbloginmanager;
+  }
 }
+var fbloginmanager = new FBLoginManager();

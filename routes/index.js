@@ -1,7 +1,9 @@
 ///<reference path='../types/DefinitelyTyped/node/node.d.ts'/>
 ///<reference path='../types/DefinitelyTyped/express/express.d.ts'/> 
-var Router = (function () {
-    function Router() {
+var ViewRouter = (function () {
+    function ViewRouter() {
+    }
+    ViewRouter.createRouter = function () {
         var express = require('express');
         var router = express.Router();
         /* GET home page. */
@@ -17,50 +19,18 @@ var Router = (function () {
         router.get('/MapView', function (req, res) {
             res.render('MapView', { title: 'AirTime' });
         });
-        /* GET Airport List page. */
-        router.get('/airportlist', function(req, res) {
+        /* GET Userlist page. */
+        router.get('/airportlist', function (req, res) {
             var db = req.db;
             var collection = db.get('airports');
-            collection.find({},{},function(e,docs){
-                    res.render('airportlist', {
-                        "airportlist" : docs
-                    });
-                 });
+            collection.find({}, {}, function (e, docs) {
+                res.render('airportlist', {
+                    "airportlist": docs
+                });
             });
-        /*
-            GET New User page.
-            router.get('/newuser', function(req, res) {
-                res.render('newuser', { title: 'Add New User' });
-            });
-          POST to Add User Service
-        router.post('/adduser', function(req, res) {
-        
-            // Set our internal DB variable
-            var db = req.db;
-        
-            // Get our form values. These rely on the "name" attributes
-            var user = new User(req.body.username,req.body.useremail);
-        
-            // Set our collection
-            var collection = db.get('usercollection');
-        
-            // Submit to the DB
-            collection.insert({
-                "username" : user.getName(),
-                "email" : user.getEmail(),
-            }, function (err, doc) {
-                if (err) {
-                    // If it failed, return error
-                    res.send("There was a problem adding the information to the database.");
-                }
-                else {
-                    // And forward to success page
-                    res.redirect("userlist");
-                }
-            });
-        });*/
-        module.exports = router;
-    }
-    return Router;
+        });
+        return router;
+    };
+    return ViewRouter;
 })();
-var router = new Router();
+module.exports = ViewRouter.createRouter();

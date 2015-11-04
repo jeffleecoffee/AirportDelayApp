@@ -16,16 +16,6 @@ class ServerCommService {
 
         var airportArray = new Array;
 
-        /*
-        // FaceBook Login Check
-        function checkIfInDatabase(var id) {
-
-        }
-        function addToDatabase(var id) {
-
-
-           }
-        */
       
       // Obtain airport codes from MongoDB and parse
       function parseCodes() {
