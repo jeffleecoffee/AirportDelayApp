@@ -28,7 +28,7 @@ module AirportOperations{
       var airportInfo = '<div id="content">'+
       '<div id="siteNotice">'+
       '</div>'+
-      '<h1 id="firstHeading" class="firstHeading">'+ this.airport.getName() +'</h1>'+
+      '<h1 id="firstHeading" class="firstHeading">'+ this.airport.getCode() +'</h1>'+
       '<div id="bodyContent">'+
       '<h3>Current temperature is '+ this.airport.getTemp() +' .</h3>'+
       '<h3>Current wind speed is '+ this.airport.getWind() +' .</h3>'+
