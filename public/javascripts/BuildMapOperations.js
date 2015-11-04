@@ -168,15 +168,19 @@ var AirportOperations;
 ///<reference path='./AirportMap.ts'/> 
 ///<reference path='./AirportMarker.ts'/> 
 ///<reference path='./AirportGeocoder.ts'/>
-var BuildMap = (function () {
-    function BuildMap(airports) {
-        var mapCanvas = document.getElementById('map');
-        var airportMap = new AirportOperations.AirportMap(mapCanvas);
-        var airportGeocoder = new AirportOperations.AirportGeocoder();
-        airportGeocoder.geocodeAirports(airportMap, airports);
-    }
-    return BuildMap;
-})();
+var AirportOperations;
+(function (AirportOperations) {
+    var BuildMap = (function () {
+        function BuildMap(airports) {
+            var mapCanvas = document.getElementById('map');
+            var airportMap = new AirportOperations.AirportMap(mapCanvas);
+            var airportGeocoder = new AirportOperations.AirportGeocoder();
+            airportGeocoder.geocodeAirports(airportMap, airports);
+        }
+        return BuildMap;
+    })();
+    AirportOperations.BuildMap = BuildMap;
+})(AirportOperations || (AirportOperations = {}));
 function initMap() {
     var airports = new Array();
     airports.push(new AirportOperations.Airport("BHM"));
@@ -241,6 +245,6 @@ function initMap() {
     airports[1].setWind("50 km/h");
     airports[2].setWind("60 km/h");
     airports[3].setWind("40 km/h");
-    var buildNewMap = new BuildMap(airports);
+    var buildNewMap = new AirportOperations.BuildMap(airports);
 }
 ;
