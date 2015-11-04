@@ -5,10 +5,11 @@
 
 module AirportOperations{
   export class Airport {
-    code: string;
-    name: string;
-    temp: string;
-    wind: string;
+    private code: string;
+    private name: string;
+    private temp: string;
+    private wind: string;
+    private location: google.maps.LatLng;
 
     constructor(codeInput: string) {
       this.code = codeInput;
@@ -26,6 +27,10 @@ module AirportOperations{
       this.wind = windInput;
     }
 
+    setLocation(location: google.maps.LatLng){
+      this.location = location;
+    }
+
     getCode() {
       return this.code;
     }
@@ -40,6 +45,10 @@ module AirportOperations{
 
     getWind() {
       return this.wind;
+    }
+
+    getLocation(){
+      return this.location;
     }
   }  
 }

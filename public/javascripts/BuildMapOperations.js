@@ -17,6 +17,9 @@ var AirportOperations;
         Airport.prototype.setWind = function (windInput) {
             this.wind = windInput;
         };
+        Airport.prototype.setLocation = function (location) {
+            this.location = location;
+        };
         Airport.prototype.getCode = function () {
             return this.code;
         };
@@ -29,6 +32,9 @@ var AirportOperations;
         Airport.prototype.getWind = function () {
             return this.wind;
         };
+        Airport.prototype.getLocation = function () {
+            return this.location;
+        };
         return Airport;
     })();
     AirportOperations.Airport = Airport;
@@ -37,7 +43,6 @@ var AirportOperations;
 ///<reference path='../../types/DefinitelyTyped/express/express.d.ts'/> 
 ///<reference path='../../types/DefinitelyTyped/googlemaps/google.maps.d.ts'/> 
 ///<reference path='../../types/DefinitelyTyped/google.geolocation/google.geolocation.d.ts'/> 
-///<reference path='./Airport.ts'/> 
 var AirportOperations;
 (function (AirportOperations) {
     var AirportMap = (function () {
@@ -66,15 +71,32 @@ var AirportOperations;
 var AirportOperations;
 (function (AirportOperations) {
     var AirportMarker = (function () {
-        function AirportMarker(airportMap, position) {
+        function AirportMarker(airportMap, airport) {
             this.map = airportMap.getMap();
-            this.position = position;
-            this.options = {
+            this.airport = airport;
+            this.position = this.airport.getLocation();
+            this.markerOptions = {
                 position: this.position,
                 clickable: true,
                 map: this.map
             };
-            this.marker = new google.maps.Marker(this.options);
+            var airportInfo = '<div id="content">' +
+                '<div id="siteNotice">' +
+                '</div>' +
+                '<h1 id="firstHeading" class="firstHeading">' + this.airport.getName() + '</h1>' +
+                '<div id="bodyContent">' +
+                '<h3>Current temperature is ' + this.airport.getTemp() + ' .</h3>' +
+                '<h3>Current wind speed is ' + this.airport.getWind() + ' .</h3>' +
+                '</div>' +
+                '</div>';
+            this.marker = new google.maps.Marker(this.markerOptions);
+            google.maps.event.addListener(this.marker, 'click', function () {
+                var infoWindow = new google.maps.InfoWindow({
+                    content: airportInfo,
+                    maxWidth: 200
+                });
+                infoWindow.open(this.map, this);
+            });
         }
         return AirportMarker;
     })();
@@ -96,19 +118,38 @@ var AirportOperations;
         AirportGeocoder.prototype.getGeocoder = function () {
             return this.geocoder;
         };
-        AirportGeocoder.prototype.geocodeAirports = function (airportCodes, map) {
+        AirportGeocoder.prototype.geocodeAirports = function (map, airports) {
             var gmap = map.getMap();
-            for (var i = 0; i < airportCodes.length; i++) {
-                this.geocoder.geocode({ 'address': airportCodes[i] + " airport" }, function (results, status) {
+            var coordinates = Array();
+            var length = airports.length;
+            for (var i = 0; i < airports.length; i++) {
+                var currCode = airports[i].getCode() + " airport";
+                this.geocoder.geocode({ 'address': currCode }, function (results, status) {
                     if (status === google.maps.GeocoderStatus.OK) {
-                        gmap.setCenter(results[0].geometry.location);
-                        var marker = new AirportOperations.AirportMarker(map, results[0].geometry.location);
+                        coordinates.push(results[0].geometry.location);
+                        if (coordinates.length !== null && coordinates.length == length) {
+                            assignAirportLocation(coordinates, airports);
+                            createMarkers(map, airports);
+                        }
                     }
                     else {
                         alert('Geocode was not successful for the following reason: ' + status);
                     }
                 });
             }
+            var assignAirportLocation = function (coordinates, airports) {
+                for (var j = 0; j < coordinates.length; j++) {
+                    airports[j].setLocation(coordinates[j]);
+                }
+            };
+            var createMarkers = function (map, airports) {
+                for (var k = 0; k < airports.length; k++) {
+                    createMarker(map, airports[k]);
+                }
+            };
+            var createMarker = function (map, airport) {
+                var marker = new AirportOperations.AirportMarker(map, airport);
+            };
         };
         return AirportGeocoder;
     })();
@@ -122,15 +163,32 @@ var AirportOperations;
 ///<reference path='./AirportMap.ts'/> 
 ///<reference path='./AirportMarker.ts'/> 
 ///<reference path='./AirportGeocoder.ts'/>
-function initMap() {
-    var airportCodes = [];
-    airportCodes.push("BHM");
-    airportCodes.push("ANC");
-    airportCodes.push("ILG");
-    airportCodes.push("MIA");
-    var mapCanvas = document.getElementById('map');
-    var airportMap = new AirportOperations.AirportMap(mapCanvas);
-    var airportGeocoder = new AirportOperations.AirportGeocoder();
-    airportGeocoder.geocodeAirports(airportCodes, airportMap);
-}
-window.onload = initMap;
+var BuildMap = (function () {
+    function BuildMap(airports) {
+        var mapCanvas = document.getElementById('map');
+        var airportMap = new AirportOperations.AirportMap(mapCanvas);
+        var airportGeocoder = new AirportOperations.AirportGeocoder();
+        airportGeocoder.geocodeAirports(airportMap, airports);
+    }
+    return BuildMap;
+})();
+window.onload = function () {
+    var airports = new Array();
+    airports.push(new AirportOperations.Airport("BHM"));
+    airports.push(new AirportOperations.Airport("ANC"));
+    airports.push(new AirportOperations.Airport("ILG"));
+    airports.push(new AirportOperations.Airport("MIA"));
+    airports[0].setName("Birmingham-Shuttlesworth International Airport");
+    airports[1].setName("Ted Stevens Anchorage International Airport");
+    airports[2].setName("New Castle Airport");
+    airports[3].setName("Miami International Airport");
+    airports[0].setTemp("12 Degrees Celcius");
+    airports[1].setTemp("5 Degrees Celcius");
+    airports[2].setTemp("10 Degrees Celcius");
+    airports[3].setTemp("25 Degrees Celcius");
+    airports[0].setWind("50 km/h");
+    airports[1].setWind("50 km/h");
+    airports[2].setWind("60 km/h");
+    airports[3].setWind("40 km/h");
+    var buildNewMap = new BuildMap(airports);
+};
