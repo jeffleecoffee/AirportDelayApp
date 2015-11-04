@@ -5,13 +5,13 @@ class AuthRouter {
 
   constructor() {
     var express = require('express');
-    var router = express.Router();
     var passport = require('passport');
     var FacebookStrategy = require('passport-facebook').Strategy;
     var mongo = require('mongodb');
     var monk = require('monk');
     var db = monk('localhost:27017/sprint1db');
-
+    
+    var router = express.Router();
     var users = db.get('users');
 
     passport.serializeUser(function(user, done) {
@@ -20,7 +20,7 @@ class AuthRouter {
 
     passport.deserializeUser(function(id, done) {
       users.findOne({uid: id}, function(err,doc) {
-        done(err, {uid: doc.uid});
+        done(err, {uid: doc.uid}); //make user object
       });
     });
 
@@ -31,10 +31,10 @@ class AuthRouter {
         enableProof: false
       },
       function(accessToken, refreshToken, profile, done) {
-        users.update({uid: profile.id}, {uid: profile.id}, {upsert: true}, 
+        users.update({uid: profile.id}, {uid: profile.id}, {upsert: true}, //these should be in a user service
           function(err, numberOfDocumentsUpdated, documents){ 
             users.findOne({uid: profile.id}, function(err,doc) {
-              done(err, {uid: doc.uid});
+              done(err, {uid: doc.uid}); //make user object
             });
         });
       }));
