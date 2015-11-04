@@ -5,6 +5,8 @@ class FBLoginManager {
 
   constructor(){
     var express = require('express');
+    var passport = require('passport');
+    var passportfb = require('passport-facebook');
     var mongo = require('mongodb');
     var monk = require('monk');
     var db = monk('localhost:27017/sprint1db');
