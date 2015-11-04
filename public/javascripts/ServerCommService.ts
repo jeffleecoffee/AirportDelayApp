@@ -2,7 +2,7 @@
 ///<reference path='../../types/DefinitelyTyped/express/express.d.ts'/> 
 ///<reference path='./Airport.ts'/> 
 
-export class ServerCommService {
+class ServerCommService {
 
     airportArray: Array<AirportOperations.Airport>;
 
@@ -29,10 +29,12 @@ export class ServerCommService {
       
       // Obtain airport codes from MongoDB and parse
       function parseCodes() {
-        var codeArray = new Array<string>();
+        var codeArray = new Array();
         var collection = db.get('airports');
-        db.collection.find().foreach(function(airCode) {
-          codeArray.push(airCode.IATA);
+        db.collection.find({}, {}, function(err, aPorts) {
+          for (var n = 0; n<aPorts.length; n++) {
+            codeArray.push(aPorts[n].IATA);
+          }
         })
         callAirports(codeArray);
         
@@ -86,6 +88,9 @@ export class ServerCommService {
           realThis.airportRoutingCall(codeArray[i]);
         }
       };
+
+      var serverComm = new ServerCommService();
+      module.exports = serverComm;
     }
     // Return the array of airports!
     getAirports() {
