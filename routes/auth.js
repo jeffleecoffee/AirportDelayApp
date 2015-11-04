@@ -9,13 +9,14 @@ var AuthRouter = (function () {
         var mongo = require('mongodb');
         var monk = require('monk');
         var db = monk('localhost:27017/sprint1db');
+        var users = db.get('users');
         passport.serializeUser(function (user, done) {
-            done(null, user.id);
+            done(null, user.uid);
         });
         passport.deserializeUser(function (id, done) {
-            // User.findById(id, function(err, user) {
-            done(null, id);
-            // });
+            users.findOne({ uid: id }, function (err, doc) {
+                done(err, { uid: doc.uid });
+            });
         });
         passport.use(new FacebookStrategy({
             clientID: '1646694312239569',
@@ -23,14 +24,22 @@ var AuthRouter = (function () {
             callbackURL: "http://localhost:3000/auth/facebook/callback",
             enableProof: false
         }, function (accessToken, refreshToken, profile, done) {
-            // User.findOrCreate({ facebookId: profile.id }, function (err, user) {
-            return done(null, profile);
-            // });
+            users.update({ uid: profile.id }, { uid: profile.id }, { upsert: true }, function (err, numberOfDocumentsUpdated, documents) {
+                users.findOne({ uid: profile.id }, function (err, doc) {
+                    done(err, { uid: doc.uid });
+                });
+            });
         }));
         router.get('/facebook', passport.authenticate('facebook'));
-        router.get('/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/login' }), function (req, res) {
+        router.get('/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/' }), function (req, res) {
             // Successful authentication, redirect home.
             res.redirect('/');
+        });
+        router.get('/logout', function (req, res) {
+            req.session.destroy(function (err) {
+                req.logOut();
+                res.redirect('/');
+            });
         });
         module.exports = router;
     }

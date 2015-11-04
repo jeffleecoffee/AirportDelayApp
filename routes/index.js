@@ -6,11 +6,19 @@ var ViewRouter = (function () {
     ViewRouter.createRouter = function () {
         var express = require('express');
         var router = express.Router();
+        function checkAuthentication(request, response, next) {
+            if (request.isAuthenticated()) {
+                return next();
+            }
+            else {
+                response.redirect('/?loginPrompt=1');
+            }
+        }
         /* GET home page. */
         router.get('/', function (req, res, next) {
-            res.render('LoginView', { title: 'AirTime' });
+            res.render('LoginView', { title: 'AirTime', user: req.user });
         });
-        router.get('/RequestView', function (req, res) {
+        router.get('/RequestView', checkAuthentication, function (req, res) {
             res.render('RequestView', { title: 'AirTime' });
         });
         router.get('/ResultView', function (req, res) {
