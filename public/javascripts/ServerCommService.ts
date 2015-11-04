@@ -1,30 +1,37 @@
 ///<reference path='../../types/DefinitelyTyped/node/node.d.ts'/>
 ///<reference path='../../types/DefinitelyTyped/express/express.d.ts'/> 
-
 ///<reference path='./Airport.ts'/> 
 
 class ServerCommService {
 
-    var http = require('http');
-    var airports = new Array;
+    airportArray: Array<AirportOperations.Airport>;
 
     	/* To add here: Facebook login and FAA request */
-    constructor(){
+    constructor() {
+        var http = require('http');
         var express = require('express');
         var mongo = require('mongodb');
         var monk = require('monk');
         var db = monk('localhost:27017/sprint1db');
 
-            // FaceBook Login Check
-        function checkIfInDatabase(var id) {
+        var airportArray = new Array;
 
-        }
-        function addToDatabase(var id) {
+      
+      // Obtain airport codes from MongoDB and parse
+      function parseCodes() {
+        var codeArray = new Array();
+        var collection = db.get('airports');
+        db.collection.find({}, {}, function(err, aPorts) {
+          for (var n = 0; n<aPorts.length; n++) {
+            codeArray.push(aPorts[n].IATA);
+          }
+        })
+        callAirports(codeArray);
+        
+      }
 
-
-            }
       // Call to FAA and parse the result
-      airportRoutingCall(airCode: string){
+      function airportRoutingCall(airCode: string){
         http.get({
           host: "services.faa.gov",
           path: "/airport/status/" + airCode + "?format=application/JSON",},
@@ -51,7 +58,7 @@ class ServerCommService {
               var tempWeather = parsed.weather;
               newAirport.setTemp(tempWeather.temp);
               newAirport.setWind(tempWeather.wind);
-              airports.push(newAirport);
+              airportArray.push(newAirport);
             })
 
 
@@ -64,15 +71,20 @@ class ServerCommService {
           })
       };
 
-          // Call the routing call for each airport in the list, codeArray is array of string
-        callAirports(codeArray){
-            for (var i =0; i< codeArray.length; i++) {
-              var realThis = this;
-              realThis.airportRoutingCall(codeArray[i]);
-            }
-          };
+      // Call the routing call for each airport in the list, codeArray is array of string
+      function callAirports(codeArray){
+        var realThis = this;
+        for (var i =0; i< codeArray.length; i++) {
+          realThis.airportRoutingCall(codeArray[i]);
+        }
+      };
 
-
-
+      var serverComm = new ServerCommService();
+      module.exports = serverComm;
     }
+    // Return the array of airports!
+    getAirports() {
+      return this.airportArray;
+    }
+
 }
