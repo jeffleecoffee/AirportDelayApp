@@ -13,33 +13,46 @@ class AuthRouter {
     var db = monk('localhost:27017/sprint1db');
 
     passport.serializeUser(function(user, done) {
-      done(null, user.id);
+      done(null, {id: user.id});
     });
+
     passport.deserializeUser(function(id, done) {
-      done(null, id);
+      // User.findById(id, function(err, user) {
+        done(null, id);
+      // });
     });
 
     passport.use(new FacebookStrategy({
-      clientID: '1646694312239569',
-      clientSecret: '01458760d8b21ff2649a8d029b480f57',
-      callbackURL: "http://localhost:3000/auth/facebook/callback",
-      enableProof: false
-    },
+        clientID: '1646694312239569',
+        clientSecret: '01458760d8b21ff2649a8d029b480f57',
+        callbackURL: "http://localhost:3000/auth/facebook/callback",
+        enableProof: false
+      },
       function(accessToken, refreshToken, profile, done) {
+        console.log(profile);
+        // User.findOrCreate({ facebookId: profile.id }, function (err, user) {
         return done(null, profile);
-    }
-    ));
+        // });
+      }));
 
     router.get('/facebook',
       passport.authenticate('facebook'));
 
     router.get('/facebook/callback',
-      passport.authenticate('facebook', { failureRedirect: '/login' }),
+      passport.authenticate('facebook', { failureRedirect: '/' }),
       function(req, res) {
         // Successful authentication, redirect home.
         res.redirect('/');
       });
-    
+
+    router.get('/logout', function(req, res){
+      req.session.destroy(function (err) {
+        req.logOut();
+        res.redirect('/');
+      });
+
+
+    });
 
     module.exports = router;
   }

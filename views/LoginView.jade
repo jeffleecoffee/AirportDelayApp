@@ -5,81 +5,30 @@ html
   body
     p Login Page
     div
-      button#login Login
-      button#logout Logout
+      a(id='login', class='button', href='/auth/facebook') Login
       br
-      button#requestview Give Me Request
+      a(id='logout', class='button', href='/auth/logout') Logout
+      br
+      a(id='request', class='button', href='/RequestView') Give Me RequestView
+
     br
-    a(class='button', href='/auth/facebook') FB
-    
     span#user-info
     br
     span#user-stat
-    span#fb-root
     
-    script(src='http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js')
-    script(src='http://connect.facebook.net/en_US/all.js')
+  script(src='http://code.jquery.com/jquery-2.1.4.min.js')
 
-    script.
-      // initialize the library with the API key
-      FB.init({ appId:'1646694312239569', status: true, cookie: true, xfbml: true, version: 'v2.5' });
+  script.
+    var user = !{JSON.stringify(user === undefined ? null : user)};
 
-      // fetch the status on load
-      // for viewing my current login status and name
-      FB.getLoginStatus(handleSessionResponse);
-
-
-      $('#login').bind('click', function() {
-        FB.login(handleSessionResponse);        
-        //if this user UID is not in our database add them
-
-      });
-      
-      $('#logout').bind('click', function() {
-        FB.logout(handleSessionResponse);
-      });
-
-      $('#requestview').bind('click', function() {
-        if (loginStatusReponse() === 'connected') {
-          window.location.href = "/RequestView";
-        }
-        else {
-          FB.login(handleSessionResponse);
-        }
-
-      });
-      
-      // handle a session response from any of the auth related calls
-      function handleSessionResponse() {
-        FB.api('/me', function(response) {
-          console.log(response);
-          $('#user-info').html(response.id + ' - ' + response.name);
-        });
-        FB.getLoginStatus(function(response) {
-          console.log(response);
-          $('#user-stat').html(response.status);
-        });
-      }
-      function uidResponse() {
-        var uid = "";
-        FB.api('/me', function(response) {
-          console.log(response);
-          uid = response.id;
-        });
-        return uid;
-      }
-      function loginStatusReponse() {
-        var stat = "";
-        FB.getLoginStatus(function(response) {
-          console.log(response);
-          $('#user-stat').html(response.status);
-          stat = response.status;
-        });
-        return stat;
-      }
-      function saveUser() {
-
-      }
-
-
-
+    if (user == null) {
+      $('#logout').css('display', 'none');
+      $('#request').css('display', 'none');       
+      $('#user-info').css('display', 'none');  
+      $('#user-stat').css('display', 'none'); 
+    } 
+    else {
+      $('#login').css('display', 'none');  
+      $('#user-info').text("UID: " + user.id);  
+      $('#user-stat').text("FB status: connected");       
+    }
