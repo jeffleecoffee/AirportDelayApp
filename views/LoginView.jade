@@ -32,10 +32,10 @@ html
       $('#login').bind('click', function() {
         FB.login(handleSessionResponse);        
         //if this user UID is not in our database add them
-        // var uid = uidResponse();
-        // if (!checkIfInDatabase(uid)) {
-        //   addToDatabase(uid);
-        // }
+        var uid = uidResponse();
+        if (!checkIfInDatabase(uid)) {
+          addToDatabase(uid);
+        }
       });
       
       $('#logout').bind('click', function() {
