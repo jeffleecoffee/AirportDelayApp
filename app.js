@@ -26,22 +26,27 @@ var Application = (function () {
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(cookieParser());
-        app.use(require('express-session')({
+        var expressSession = require('express-session');
+        app.use(expressSession({
             secret: 'keyboard cat',
             resave: false,
-            saveUninitialized: false
+            saveUninitialized: false,
+            store: new expressSession.MemoryStore()
         }));
         app.use(passport.initialize());
         app.use(passport.session());
         app.use(express.static(path.join(__dirname, 'public')));
-        // Make our db accessible to our router
-        app.use(function (req, res, next) {
-            req.db = db;
-            next();
-        });
+        // Use requires to dependency inject instead
+        // app.use(function(req,res,next){
+        //     req.db = db;
+        //         next();
+        // });
         app.use('/', routes);
         app.use('/users', users);
         app.use('/auth', auth);
+        app.use(function (req, res, next) {
+            req.session = req.session || {};
+        });
         /// catch 404 and forwarding to error handler
         app.use(function (req, res, next) {
             var err = new Error('Not Found');

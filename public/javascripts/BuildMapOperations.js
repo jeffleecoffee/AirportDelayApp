@@ -83,7 +83,7 @@ var AirportOperations;
             var airportInfo = '<div id="content">' +
                 '<div id="siteNotice">' +
                 '</div>' +
-                '<h1 id="firstHeading" class="firstHeading">' + this.airport.getName() + '</h1>' +
+                '<h1 id="firstHeading" class="firstHeading">' + this.airport.getCode() + '</h1>' +
                 '<div id="bodyContent">' +
                 '<h3>Current temperature is ' + this.airport.getTemp() + ' .</h3>' +
                 '<h3>Current wind speed is ' + this.airport.getWind() + ' .</h3>' +
@@ -119,34 +119,39 @@ var AirportOperations;
             return this.geocoder;
         };
         AirportGeocoder.prototype.geocodeAirports = function (map, airports) {
-            var gmap = map.getMap();
             var coordinates = Array();
             var length = airports.length;
-            for (var i = 0; i < airports.length; i++) {
-                var currCode = airports[i].getCode() + " airport";
-                this.geocoder.geocode({ 'address': currCode }, function (results, status) {
-                    if (status === google.maps.GeocoderStatus.OK) {
-                        coordinates.push(results[0].geometry.location);
-                        if (coordinates.length !== null && coordinates.length == length) {
-                            assignAirportLocation(coordinates, airports);
-                            createMarkers(map, airports);
+            var geocoder = this.geocoder;
+            geocodethis(map, coordinates, length, geocoder, airports);
+            function geocodethis(map, coordinates, length, geocoder, airports) {
+                var delay = 1000;
+                var nextAddress = 0;
+                next();
+                function next() {
+                    if (nextAddress < length) {
+                        setTimeout(getGeoCodes, delay, nextAddress);
+                        nextAddress++;
+                    }
+                }
+                function getGeoCodes(nextAddress) {
+                    geocoder.geocode({ 'address': airports[nextAddress].getCode() + " airport USA" }, function (results, status) {
+                        if (status === google.maps.GeocoderStatus.OK) {
+                            console.log("Success!!" + nextAddress);
+                            coordinates.push(results[0].geometry.location);
+                            airports[nextAddress].setLocation(results[0].geometry.location);
+                            createMarker(map, airports[nextAddress]);
                         }
-                    }
-                    else {
-                        alert('Geocode was not successful for the following reason: ' + status);
-                    }
-                });
+                        else {
+                            if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+                                console.log("Limit Reached!!");
+                                nextAddress--;
+                                delay++;
+                            }
+                        }
+                        next();
+                    });
+                }
             }
-            var assignAirportLocation = function (coordinates, airports) {
-                for (var j = 0; j < coordinates.length; j++) {
-                    airports[j].setLocation(coordinates[j]);
-                }
-            };
-            var createMarkers = function (map, airports) {
-                for (var k = 0; k < airports.length; k++) {
-                    createMarker(map, airports[k]);
-                }
-            };
             var createMarker = function (map, airport) {
                 var marker = new AirportOperations.AirportMarker(map, airport);
             };
@@ -163,21 +168,71 @@ var AirportOperations;
 ///<reference path='./AirportMap.ts'/> 
 ///<reference path='./AirportMarker.ts'/> 
 ///<reference path='./AirportGeocoder.ts'/>
-var BuildMap = (function () {
-    function BuildMap(airports) {
-        var mapCanvas = document.getElementById('map');
-        var airportMap = new AirportOperations.AirportMap(mapCanvas);
-        var airportGeocoder = new AirportOperations.AirportGeocoder();
-        airportGeocoder.geocodeAirports(airportMap, airports);
-    }
-    return BuildMap;
-})();
-window.onload = function () {
+var AirportOperations;
+(function (AirportOperations) {
+    var BuildMap = (function () {
+        function BuildMap(airports) {
+            var mapCanvas = document.getElementById('map');
+            var airportMap = new AirportOperations.AirportMap(mapCanvas);
+            var airportGeocoder = new AirportOperations.AirportGeocoder();
+            airportGeocoder.geocodeAirports(airportMap, airports);
+        }
+        return BuildMap;
+    })();
+    AirportOperations.BuildMap = BuildMap;
+})(AirportOperations || (AirportOperations = {}));
+function initMap() {
     var airports = new Array();
     airports.push(new AirportOperations.Airport("BHM"));
     airports.push(new AirportOperations.Airport("ANC"));
+    airports.push(new AirportOperations.Airport("PHX"));
+    airports.push(new AirportOperations.Airport("LIT"));
+    airports.push(new AirportOperations.Airport("LAX"));
+    airports.push(new AirportOperations.Airport("DEN"));
+    airports.push(new AirportOperations.Airport("BDL"));
     airports.push(new AirportOperations.Airport("ILG"));
     airports.push(new AirportOperations.Airport("MIA"));
+    airports.push(new AirportOperations.Airport("ATL"));
+    airports.push(new AirportOperations.Airport("HNL"));
+    airports.push(new AirportOperations.Airport("BOI"));
+    airports.push(new AirportOperations.Airport("ORD"));
+    airports.push(new AirportOperations.Airport("IND"));
+    airports.push(new AirportOperations.Airport("DSM"));
+    airports.push(new AirportOperations.Airport("MCI"));
+    airports.push(new AirportOperations.Airport("SDF"));
+    airports.push(new AirportOperations.Airport("MSY"));
+    airports.push(new AirportOperations.Airport("BGR"));
+    airports.push(new AirportOperations.Airport("BWI"));
+    airports.push(new AirportOperations.Airport("BOS"));
+    airports.push(new AirportOperations.Airport("DTW"));
+    airports.push(new AirportOperations.Airport("MSP"));
+    airports.push(new AirportOperations.Airport("GPT"));
+    airports.push(new AirportOperations.Airport("STL"));
+    airports.push(new AirportOperations.Airport("BZN"));
+    airports.push(new AirportOperations.Airport("LNK"));
+    airports.push(new AirportOperations.Airport("LAS"));
+    airports.push(new AirportOperations.Airport("MHT"));
+    airports.push(new AirportOperations.Airport("EWR"));
+    airports.push(new AirportOperations.Airport("ABQ"));
+    airports.push(new AirportOperations.Airport("JFK"));
+    airports.push(new AirportOperations.Airport("CLT"));
+    airports.push(new AirportOperations.Airport("FAR"));
+    airports.push(new AirportOperations.Airport("CMH"));
+    airports.push(new AirportOperations.Airport("OKC"));
+    airports.push(new AirportOperations.Airport("PDX"));
+    airports.push(new AirportOperations.Airport("PHL"));
+    airports.push(new AirportOperations.Airport("PVD"));
+    airports.push(new AirportOperations.Airport("CHS"));
+    airports.push(new AirportOperations.Airport("FSD"));
+    airports.push(new AirportOperations.Airport("BNA"));
+    airports.push(new AirportOperations.Airport("DFW"));
+    airports.push(new AirportOperations.Airport("SLC"));
+    airports.push(new AirportOperations.Airport("BTV"));
+    airports.push(new AirportOperations.Airport("IAD"));
+    airports.push(new AirportOperations.Airport("SEA"));
+    airports.push(new AirportOperations.Airport("IAD"));
+    airports.push(new AirportOperations.Airport("MKE"));
+    airports.push(new AirportOperations.Airport("JAC"));
     airports[0].setName("Birmingham-Shuttlesworth International Airport");
     airports[1].setName("Ted Stevens Anchorage International Airport");
     airports[2].setName("New Castle Airport");
@@ -190,5 +245,6 @@ window.onload = function () {
     airports[1].setWind("50 km/h");
     airports[2].setWind("60 km/h");
     airports[3].setWind("40 km/h");
-    var buildNewMap = new BuildMap(airports);
-};
+    var buildNewMap = new AirportOperations.BuildMap(airports);
+}
+;

@@ -13,6 +13,9 @@ module AirportOperations{
 
     constructor(codeInput: string) {
       this.code = codeInput;
+      this.name = "";
+      this.temp = "";
+      this.wind = "";
     }
 
     setName(nameInput: string) {

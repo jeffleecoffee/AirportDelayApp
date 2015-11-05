@@ -21,36 +21,46 @@ module AirportOperations{
 		}
 
 		geocodeAirports(map:AirportMap, airports:Array<Airport>){
-			var gmap = map.getMap();
 			var coordinates = Array<google.maps.LatLng>();
 			var length = airports.length;
+			var geocoder = this.geocoder;
 
-			for(var i = 0; i < airports.length; i++){
-				var currCode = airports[i].getCode()+" airport";
-				this.geocoder.geocode({'address': currCode}, function(results, status) {
-    				if (status === google.maps.GeocoderStatus.OK) {
-      					coordinates.push(results[0].geometry.location);
-      					if(coordinates.length !== null && coordinates.length == length){
-      						assignAirportLocation(coordinates, airports);
-      						createMarkers(map,airports);
-      					}
-    				} else {
-      	  				alert('Geocode was not successful for the following reason: ' + status);
-    				}
-  				});
+
+			geocodethis(map,coordinates,length,geocoder,airports);
+
+			function geocodethis(map:AirportMap,coordinates:Array<google.maps.LatLng>,length:number,geocoder:google.maps.Geocoder,airports:Array<Airport>){
+				var delay = 1000;
+				var nextAddress = 0;
+
+				next();
+
+				function next(){
+					if(nextAddress < length){
+						setTimeout(getGeoCodes,delay,nextAddress);
+						nextAddress++;
+					}
+				}
+
+				function getGeoCodes(nextAddress:number){
+					geocoder.geocode({'address': airports[nextAddress].getCode()+" airport USA"}, function(results, status) {
+						if (status === google.maps.GeocoderStatus.OK) {
+							console.log("Success!!"+nextAddress);
+							coordinates.push(results[0].geometry.location);
+							airports[nextAddress].setLocation(results[0].geometry.location);
+							createMarker(map,airports[nextAddress]);      
+						}
+
+						else {
+							if(status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT){
+								console.log("Limit Reached!!");
+								nextAddress--;
+								delay++;
+							}
+						}
+						next();
+					});
+				}
 			}
-
-			var assignAirportLocation = function(coordinates:Array<google.maps.LatLng>, airports:Array<Airport>){
-        		for(var j =0; j < coordinates.length; j++){
-          			airports[j].setLocation(coordinates[j]);
-        		}
-      		};
-
-      		var createMarkers = function(map:AirportMap,airports:Array<Airport>){
-        		for(var k = 0; k < airports.length; k++){
-          			createMarker(map, airports[k]);
-        		}
-      		};
 
       		var createMarker = function (map:AirportMap, airport:Airport){
         		var marker = new AirportMarker(map,airport);
