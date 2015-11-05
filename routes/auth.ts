@@ -20,7 +20,11 @@ class AuthRouter {
 
     passport.deserializeUser(function(id, done) {
       users.findOne({uid: id}, function(err,doc) {
-        done(err, {uid: doc.uid}); //make user object
+        if(err){
+          done(err, null);
+        } else {
+          done(err, {uid: doc.uid});
+        } //make user object
       });
     });
 
@@ -34,7 +38,11 @@ class AuthRouter {
         users.update({uid: profile.id}, {uid: profile.id}, {upsert: true}, //these should be in a user service
           function(err, numberOfDocumentsUpdated, documents){ 
             users.findOne({uid: profile.id}, function(err,doc) {
-              done(err, {uid: doc.uid}); //make user object
+              if(err){
+                done(err, null);
+              } else {
+                done(err, {uid: doc.uid});
+              } //make user object
             });
         });
       }));
