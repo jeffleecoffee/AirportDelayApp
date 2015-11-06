@@ -1,12 +1,13 @@
-script(src="public/javascripts/ServerCommService.ts")
 block content
   h1= title
   p Results Page
   iframe(width='800', height='600', scrolling='yes', frameborder='yes', src= 'MapView')
+  h1. map
+    map
   h1.
     Results List
   ul
     each result in resultsList
       p xxxxxxxxxxxxx
         each val, index in result
-          li= index + ': ' + val
+          li= result.getName()
