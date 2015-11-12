@@ -2,9 +2,6 @@
 ///<reference path='../../types/DefinitelyTyped/express/express.d.ts'/> 
 ///<reference path='./Airport.ts'/> 
 	class ServerCommService {
-
-		airportArray: Array<AirportOperations.Airport>;
-
 			/* To add here: Facebook login and FAA request */
 		constructor(require) {
 			this.http = require.http;
@@ -14,12 +11,12 @@
 			this.mongo = require.mongo;
 			this.monk = require.monk;
 			this.db = require.db;
-			this.airportArray = new Array;
 		}
 
 		  
 		  // Obtain airport codes from MongoDB and parse
 		  parseCodes(callback) {
+		    var airportArray = new Array();
 		    var http = this.http;
 			var waitClock = 0;
 			var codeArray = new Array();
@@ -67,10 +64,12 @@
 					newAirport.setName(parsed.name);
 					newAirport.setTemp(parsed.weather.temp);
 					newAirport.setWind(parsed.weather.wind);
-					trueThis.airportArray.push(newAirport);
+					airportArray.push(newAirport);
 					console.log(count);
+					console.log(airportArray);
+					console.log("airports");
 					count++;
-					if (count == aPorts.length -2)callback();
+					if (count == aPorts.length -2)callback(airportArray);
 				  }, 1000);}
 				  skip = false;
 				})

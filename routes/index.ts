@@ -10,7 +10,6 @@ class ViewRouter {
         var express = require('express');
         var router = express.Router();
 		var monk = require('monk');
-		var airports = new Array();
         function checkAuthentication(request, response, next) {
             if (request.isAuthenticated()){
                 return next();
@@ -37,7 +36,7 @@ class ViewRouter {
 		  //console.log(db);
 		  //console.log(req);
 		  //console.log(serverCommInstance);
-		  serverCommInstance.parseCodes(function () { this.airports = serverCommInstance.getAirports(); console.log(this.airports); });
+		  serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports); });
 		  //console.log(airports);
           res.render('RequestView', {title: 'AirTime', map: 'test' });
         });
