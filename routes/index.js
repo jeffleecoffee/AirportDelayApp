@@ -95,10 +95,6 @@ var ServerCommService = (function () {
                             count++;
                             skip = true;
                         }
-						if (!skip && !parsed.weather){
-							skip = true;
-							count++;
-						}
                         if (!skip) {
                             var newAirport = new AirportOperations.Airport(parsed.IATA);
                             console.log(parsed.IATA);
@@ -431,6 +427,15 @@ var ViewRouter = (function () {
             serverCommInstance.parseCodes(function () { this.airports = serverCommInstance.getAirports(); console.log(this.airports); });
             //console.log(airports);
             res.render('RequestView', { title: 'AirTime', map: 'test' });
+        });
+        router.post('/savecodes', function (req, res) {
+            var departure = req.body.startcode;
+            var arrival = req.body.endcode;
+            var db = req.db;
+            var testColl = db.get("Htest");
+            testColl.update({ uid: "Test123" }, { $push: { history: departure } });
+            testColl.update({ uid: "Test123" }, { $push: { history: arrival } });
+            res.redirect("ResultView");
         });
         router.get('/ResultView', function (req, res) {
             res.render('ResultView', { title: 'AirTime', resultsList: this.airports });

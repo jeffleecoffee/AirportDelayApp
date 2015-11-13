@@ -1,5 +1,9 @@
 block content
   h1= title
   p Request Page
-  form#formRequest(name="submit",method="get",action="/ResultView")
+
+  p Input two 3-letter airport codes.
+  form#formRequest(name="submit",method="post",action="/savecodes")
+    input#inputAirportStartCode(type="text", placeholder="Departure", name="startcode")
+    input#inputAirportEndCode(type="text", placeholder="Arrival", name="endcode")
     button#btnSubmit(type="submit") Request
