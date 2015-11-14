@@ -2,4 +2,19 @@ block content
   h1= title
   p Request Page
   form#formRequest(name="submit",method="get",action="/ResultView")
+    label Start: 
+    input#start(type='text', name='start')
+    div#midpointGroup 
+    br
+    label Destination:
+    input#destination(type='text', name='destination')
+    button#addAirport(type='button', onclick='addMidpoint()') Add Airport
     button#btnSubmit(type="submit") Request
+
+script.
+    var countMidpoint = 1;
+    function addMidpoint(){
+      var inputName = "Midpoint"+countMidpoint;
+      document.getElementById("midpointGroup").innerHTML+='<br/><label>'+inputName+':</label><input type="text" id="'+inputName+'" name="'+inputName+'" />';
+      countMidpoint++;
+    }
