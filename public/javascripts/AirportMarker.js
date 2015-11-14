@@ -16,6 +16,7 @@ var AirportOperations;
                 clickable: true,
                 map: this.map
             };
+            console.log(this.airport);
             var airportInfo = '<div id="content">' +
                 '<div id="siteNotice">' +
                 '</div>' +

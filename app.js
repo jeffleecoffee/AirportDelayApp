@@ -13,6 +13,8 @@ var Application = (function () {
         var mongo = require('mongodb');
         var monk = require('monk');
         var db = monk('localhost:27017/sprint1db');
+        var http = require('http');
+        console.log(http);
         var routes = require('./routes/index');
         var users = require('./routes/users');
         var auth = require('./routes/auth');
@@ -24,7 +26,16 @@ var Application = (function () {
         //app.use(favicon(__dirname + '/public/favicon.ico'));
         app.use(logger('dev'));
         app.use(bodyParser.json());
-        app.use(bodyParser.urlencoded({ extended: false }));
+        app.use(bodyParser.urlencoded({
+            extended: false
+        }));
+        app.use(function (req, res, next) {
+            req.db = db;
+            req.monk = monk;
+            req.mongo = mongo;
+            req.http = http;
+            next();
+        });
         app.use(cookieParser());
         var expressSession = require('express-session');
         app.use(expressSession({

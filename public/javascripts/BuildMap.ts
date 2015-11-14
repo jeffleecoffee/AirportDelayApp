@@ -89,8 +89,3 @@ function initMap(){
 
     var buildNewMap = new AirportOperations.BuildMap(airports);
 };
-
-
-
-
-
