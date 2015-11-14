@@ -10,29 +10,25 @@ var ServerCommService = (function () {
         var monk = require('monk');
         var db = monk('localhost:27017/sprint1db');
         var airportArray = new Array;
-        /*
-        // FaceBook Login Check
-        function checkIfInDatabase(var id) {
-
-        }
-        function addToDatabase(var id) {
-
-
-           }
-        */
         // Obtain airport codes from MongoDB and parse
-        function parseCodes() {
+        function parseCodes(callback) {
+            var waitClock = 0;
             var codeArray = new Array();
             var collection = db.get('airports');
             db.collection.find({}, {}, function (err, aPorts) {
                 for (var n = 0; n < aPorts.length; n++) {
-                    codeArray.push(aPorts[n].IATA);
+                    codeArray.push(aPorts[n].IATA, function () {
+                        if (++waitClock == aPorts.length) {
+                            callAirports(codeArray, function () {
+                                callback();
+                            });
+                        }
+                    });
                 }
             });
-            callAirports(codeArray);
         }
         // Call to FAA and parse the result
-        function airportRoutingCall(airCode) {
+        function airportRoutingCall(airCode, callback) {
             http.get({
                 host: "services.faa.gov",
                 path: "/airport/status/" + airCode + "?format=application/JSON" }, function (res) {
@@ -51,11 +47,13 @@ var ServerCommService = (function () {
                         console.error('Unable to parse response as JSON', err);
                     }
                     var newAirport = new AirportOperations.Airport(parsed.IATA);
-                    newAirport.setName(parsed.name);
-                    var tempWeather = parsed.weather;
-                    newAirport.setTemp(tempWeather.temp);
-                    newAirport.setWind(tempWeather.wind);
-                    airportArray.push(newAirport);
+                    setTimeout(function () {
+                        newAirport.setName(parsed.name);
+                        newAirport.setTemp(parsed.weather.temp);
+                        newAirport.setWind(parsed.weather.wind);
+                        airportArray.push(newAirport);
+                        callback();
+                    }, 1000);
                 })
                     .on('error', function (err) {
                     // handle errors with request itself
@@ -65,15 +63,19 @@ var ServerCommService = (function () {
         }
         ;
         // Call the routing call for each airport in the list, codeArray is array of string
-        function callAirports(codeArray) {
+        function callAirports(codeArray, callback) {
+            var waitClock = 0;
             var realThis = this;
             for (var i = 0; i < codeArray.length; i++) {
-                realThis.airportRoutingCall(codeArray[i]);
+                realThis.airportRoutingCall(codeArray[i], function () {
+                    if (++waitClock == codeArray.length) {
+                        callback();
+                    }
+                });
             }
         }
         ;
-        var serverComm = new ServerCommService();
-        module.exports = serverComm;
+        module.exports = ServerCommService.constructor();
     }
     // Return the array of airports!
     ServerCommService.prototype.getAirports = function () {

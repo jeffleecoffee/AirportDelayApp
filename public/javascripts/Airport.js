@@ -7,6 +7,9 @@ var AirportOperations;
     var Airport = (function () {
         function Airport(codeInput) {
             this.code = codeInput;
+            this.name = "";
+            this.temp = "";
+            this.wind = "";
         }
         Airport.prototype.setName = function (nameInput) {
             this.name = nameInput;
