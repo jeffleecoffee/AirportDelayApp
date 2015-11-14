@@ -57,27 +57,23 @@ var ServerCommService = (function () {
         this.db = require.db;
     }
     // Obtain airport codes from MongoDB and parse
-    ServerCommService.prototype.parseCodes = function (callback) {
+    ServerCommService.prototype.parseCodes = function (callback, codeArray) {
         var airportArray = new Array();
         var http = this.http;
         var waitClock = 0;
-        var codeArray = new Array();
         var collection = this.db.get('airports');
         var trueThis = this;
         var skip = false;
+        codeArray = ["ATL", "ANC", "AUS", "BWI", "BOS", "CLT", "MDW", "ORD", "CVG"];
         var tempAirportArray = new Array();
-        collection.find({}, {}, function (err, aPorts) {
-            for (var n = 0; n < aPorts.length; n++) {
-                //console.log("iterate");
-                //console.log(codeArray);
-                codeArray.push(aPorts[n].IATA);
-            }
-            var count = 0;
-            for (var n = 0; n < aPorts.length - 1; n++) {
-                console.log("iterateFAAcall");
+        var count = 0;
+        var count1 = 0;
+        for (var n = 0; n < codeArray.length; n++) {
+            console.log("iterateFAAcall");
+            setTimeout(function () {
                 http.get({
                     host: "services.faa.gov",
-                    path: "/airport/status/" + codeArray[n] + "?format=application/JSON" }, function (res) {
+                    path: "/airport/status/" + codeArray[count1++] + "?format=application/JSON" }, function (res) {
                     res.setEncoding('utf8');
                     var body = ' ';
                     // Make body the response of the routing call
@@ -91,7 +87,7 @@ var ServerCommService = (function () {
                         }
                         catch (err) {
                             console.error('Unable to parse response as JSON', err);
-                            console.log(body);
+                            //console.log(body);
                             count++;
                             skip = true;
                         }
@@ -99,18 +95,16 @@ var ServerCommService = (function () {
                             var newAirport = new AirportOperations.Airport(parsed.IATA);
                             console.log(parsed.IATA);
                             console.log(parsed);
-                            setTimeout(function () {
-                                newAirport.setName(parsed.name);
-                                newAirport.setTemp(parsed.weather.temp);
-                                newAirport.setWind(parsed.weather.wind);
-                                airportArray.push(newAirport);
-                                console.log(count);
-                                console.log(airportArray);
-                                console.log("airports");
-                                count++;
-                                if (count == aPorts.length - 2)
-                                    callback(airportArray);
-                            }, 1000);
+                            newAirport.setName(parsed.name);
+                            newAirport.setTemp(parsed.weather.temp);
+                            newAirport.setWind(parsed.weather.wind);
+                            airportArray.push(newAirport);
+                            console.log(count);
+                            console.log(airportArray);
+                            console.log("airports");
+                            count++;
+                            if (count >= codeArray.length)
+                                callback(airportArray);
                         }
                         skip = false;
                     })
@@ -119,8 +113,8 @@ var ServerCommService = (function () {
                         console.error('Error with the request:', err.message);
                     });
                 });
-            }
-        });
+            }, 1000);
+        }
     };
     // Call to FAA and parse the result
     ServerCommService.prototype.airportRoutingCall = function (airCode, callback) {
@@ -401,6 +395,7 @@ var ViewRouter = (function () {
         var express = require('express');
         var router = express.Router();
         var monk = require('monk');
+        var airports = new Array();
         function checkAuthentication(request, response, next) {
             if (request.isAuthenticated()) {
                 return next();
@@ -410,20 +405,14 @@ var ViewRouter = (function () {
             }*/
         }
         /* GET home page. */
-        function obtainAirports() {
-            console.log("obtaining airports");
-            //scs = "potato";
-            console.log(scs);
-            scs.parseCodes(function () { this.airports = this.scs.getAirports(); });
-        }
         router.get('/', function (req, res, next) {
             res.render('LoginView', { title: 'AirTime', user: req.user });
         });
         router.get('/RequestView', checkAuthentication, function (req, res) {
-            res.render('RequestView', { title: 'AirTime', map: 'test' });
+            res.render('RequestView', { title: 'AirTime', map: 'test', user: req.user });
         });
-        router.get('/ResultView', function (req, res) {
-            req.serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports); res.render('ResultView', { title: 'AirTime', resultsList: this.airports }); });
+        router.get('/ResultView', checkAuthentication, function (req, res) {
+            req.serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports); res.render('ResultView', { title: 'AirTime', resultsList: this.airports, user: req.user }); }, ["1"]);
         });
         router.get('/MapView', function (req, res) {
             console.log("map");

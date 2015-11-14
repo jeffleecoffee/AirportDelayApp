@@ -9,7 +9,10 @@ class ViewRouter {
     static createRouter() {
         var express = require('express');
         var router = express.Router();
+
 		var monk = require('monk');
+        var airports = new Array();
+
         function checkAuthentication(request, response, next) {
             if (request.isAuthenticated()){
                 return next();
@@ -24,10 +27,10 @@ class ViewRouter {
           res.render('LoginView', { title: 'AirTime', user: req.user });
         });
         router.get('/RequestView', checkAuthentication, function(req, res) {
-          res.render('RequestView', {title: 'AirTime', map: 'test' });
+          res.render('RequestView', {title: 'AirTime', map: 'test', user:req.user });
         });
-        router.get('/ResultView', function(req, res) {
-		  req.serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports);res.render('ResultView', {title: 'AirTime', resultsList: this.airports}); },["1"]);
+        router.get('/ResultView', checkAuthentication, function(req, res) {
+		  req.serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports);res.render('ResultView', {title: 'AirTime', resultsList: this.airports,user: req.user}); },["1"]);
         });
         router.get('/MapView', function(req, res) {
 		  console.log("map");
@@ -48,3 +51,4 @@ class ViewRouter {
     }
 }
 module.exports = ViewRouter.createRouter();
+
