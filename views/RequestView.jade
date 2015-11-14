@@ -10,8 +10,28 @@ block content
     input#destination(type='text', name='destination')
     button#addAirport(type='button', onclick='addMidpoint()') Add Airport
     button#btnSubmit(type="submit") Request
+  br
+  span#user-info
+  br
+  span#user-stat 
+  
+script(src='http://code.jquery.com/jquery-2.1.4.min.js')
 
 script.
+    var user = !{JSON.stringify(user === undefined ? null : user)};
+
+    if (user == null) {
+      $('#logout').css('display', 'none');
+      $('#request').css('display', 'none');       
+      $('#user-info').css('display', 'none');  
+      $('#user-stat').css('display', 'none'); 
+    } 
+    else {
+      $('#login').css('display', 'none');  
+      $('#user-info').text("UID: " + user.uid);  
+      $('#user-stat').text("FB status: connected");       
+    }  
+    
     var countMidpoint = 1;
     function addMidpoint(){
       var inputName = "Midpoint"+countMidpoint;
