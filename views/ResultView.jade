@@ -37,7 +37,12 @@ block content
       document.getElementById('fb-root').appendChild(e);
     }());
     
-    var flightRoute = "LAX then SFO"; // this needs to be a string of actual route to be added in later
+    for (var i = 0; i < resultsList.length(); i++) {
+      flightRoute.conat(">> ");
+      flightRoute.conat(resultsList[i].getCode());
+    }
+
+    var flightRoute = ""; // this needs to be a string of actual route to be added in later
 
     function postToFb() {
       var obj = {
@@ -46,7 +51,7 @@ block content
         picture:     'https://domain.tld/75x75.jpg', // to be changed later
         name:        'My Travel Plans',
         caption:     'AirTime Application ',
-        description: 'My Flight: ' + flightRoute
+        description: 'My Flight ' + flightRoute // My Flight >> LAX >> SFO >> ALX >> etc
       };
       FB.ui(obj);
     }
