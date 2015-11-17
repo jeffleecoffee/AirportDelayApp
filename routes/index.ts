@@ -9,8 +9,10 @@ class ViewRouter {
     static createRouter() {
         var express = require('express');
         var router = express.Router();
+
 		var monk = require('monk');
-		var airports = new Array();
+        var airports = new Array();
+
         function checkAuthentication(request, response, next) {
             if (request.isAuthenticated()){
                 return next();
@@ -21,25 +23,11 @@ class ViewRouter {
         }
         /* GET home page. */
 
-        function obtainAirports() {
-		    console.log("obtaining airports");
-			//scs = "potato";
-			console.log(scs);
-			scs.parseCodes(function () {this.airports = this.scs.getAirports();});
-        }
-
         router.get('/', function(req, res, next) {
           res.render('LoginView', { title: 'AirTime', user: req.user });
         });
         router.get('/RequestView', checkAuthentication, function(req, res) {
-		  var serverCommInstance = new ServerCommService(req);
-		  var db = req.db;
-		  //console.log(db);
-		  //console.log(req);
-		  //console.log(serverCommInstance);
-		  serverCommInstance.parseCodes(function () { this.airports = serverCommInstance.getAirports(); console.log(this.airports); });
-		  //console.log(airports);
-          res.render('RequestView', {title: 'AirTime', map: 'test' });
+          res.render('RequestView', {title: 'AirTime', map: 'test', user:req.user });
         });
 
         router.post('/savecodes', function(req, res) {
@@ -57,8 +45,10 @@ class ViewRouter {
 
             res.redirect("ResultView");
         })
-        router.get('/ResultView', function(req, res) {
-          res.render('ResultView', {title: 'AirTime', resultsList: this.airports});
+
+
+        router.get('/ResultView', checkAuthentication, function(req, res) {
+		  req.serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports);res.render('ResultView', {title: 'AirTime', resultsList: this.airports,user: req.user}); },["1"]);
         });
         router.get('/MapView', function(req, res) {
 		  console.log("map");
@@ -79,3 +69,4 @@ class ViewRouter {
     }
 }
 module.exports = ViewRouter.createRouter();
+

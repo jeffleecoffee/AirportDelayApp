@@ -2,8 +2,40 @@ block content
   h1= title
   p Request Page
 
-  p Input two 3-letter airport codes.
-  form#formRequest(name="submit",method="post",action="/savecodes")
-    input#inputAirportStartCode(type="text", placeholder="Departure", name="startcode")
-    input#inputAirportEndCode(type="text", placeholder="Arrival", name="endcode")
+  form#formRequest(name="submit",method="get",action="/ResultView")
+    label Start: 
+    input#start(type='text', name='start')
+    div#midpointGroup 
+    br
+    label Destination:
+    input#destination(type='text', name='destination')
+    button#addAirport(type='button', onclick='addMidpoint()') Add Airport
     button#btnSubmit(type="submit") Request
+  br
+  span#user-info
+  br
+  span#user-stat 
+  
+script(src='http://code.jquery.com/jquery-2.1.4.min.js')
+
+script.
+    var user = !{JSON.stringify(user === undefined ? null : user)};
+
+    if (user == null) {
+      $('#logout').css('display', 'none');
+      $('#request').css('display', 'none');       
+      $('#user-info').css('display', 'none');  
+      $('#user-stat').css('display', 'none'); 
+    } 
+    else {
+      $('#login').css('display', 'none');  
+      $('#user-info').text("UID: " + user.uid);  
+      $('#user-stat').text("FB status: connected");       
+    }  
+    
+    var countMidpoint = 1;
+    function addMidpoint(){
+      var inputName = "Midpoint"+countMidpoint;
+      document.getElementById("midpointGroup").innerHTML+='<br/><label>'+inputName+':</label><input type="text" id="'+inputName+'" name="'+inputName+'" />';
+      countMidpoint++;
+    }

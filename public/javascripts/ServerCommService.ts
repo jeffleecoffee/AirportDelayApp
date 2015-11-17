@@ -2,9 +2,6 @@
 ///<reference path='../../types/DefinitelyTyped/express/express.d.ts'/> 
 ///<reference path='./Airport.ts'/> 
 	class ServerCommService {
-
-		airportArray: Array<AirportOperations.Airport>;
-
 			/* To add here: Facebook login and FAA request */
 		constructor(require) {
 			this.http = require.http;
@@ -14,31 +11,27 @@
 			this.mongo = require.mongo;
 			this.monk = require.monk;
 			this.db = require.db;
-			this.airportArray = new Array;
 		}
 
 		  
 		  // Obtain airport codes from MongoDB and parse
-		  parseCodes(callback) {
+		  parseCodes(callback, codeArray) {
+		    var airportArray = new Array();
 		    var http = this.http;
 			var waitClock = 0;
-			var codeArray = new Array();
 			var collection = this.db.get('airports');
 			var trueThis = this;
 			var skip = false;
+			codeArray = ["ATL","ANC","AUS","BWI","BOS","CLT","MDW","ORD","CVG"];
 			var tempAirportArray = new Array();
-			collection.find({}, {}, function(err, aPorts) {
-			  for (var n = 0; n<aPorts.length; n++) {
-			    //console.log("iterate");
-				//console.log(codeArray);
-				codeArray.push(aPorts[n].IATA);
-			  }
 			  var count = 0;
-			  for (var n = 0; n < aPorts.length-1; n++){//The last one isn't a valid IATA code, don't have time to fix atm
+			  var count1 = 0;
+			  for (var n = 0; n < codeArray.length; n++){
 			    console.log("iterateFAAcall");
+				setTimeout(function(){
 				http.get({
 			    host: "services.faa.gov",
-			    path: "/airport/status/" + codeArray[n] + "?format=application/JSON",},
+			    path: "/airport/status/" + codeArray[count1++] + "?format=application/JSON",},
 			    function(res) {
 				  res.setEncoding('utf8');
 				  var body = ' ';
@@ -55,7 +48,7 @@
 				  }
 				  catch (err) {
 					console.error('Unable to parse response as JSON', err);
-					console.log(body);
+					//console.log(body);
 					count++;
 					skip = true;
 				  }
@@ -63,15 +56,17 @@
 				  var newAirport = new AirportOperations.Airport(parsed.IATA);
 				  console.log(parsed.IATA);
 				  console.log(parsed);
-				  setTimeout(function() {
 					newAirport.setName(parsed.name);
 					newAirport.setTemp(parsed.weather.temp);
 					newAirport.setWind(parsed.weather.wind);
-					trueThis.airportArray.push(newAirport);
+					airportArray.push(newAirport);
 					console.log(count);
+					console.log(airportArray);
+					console.log("airports");
 					count++;
-					if (count == aPorts.length -2)callback();
-				  }, 1000);}
+					if (count >= codeArray.length)
+					  callback(airportArray);
+				  }
 				  skip = false;
 				})
 
@@ -82,8 +77,8 @@
 				  console.error('Error with the request:', err.message);
 				});
 
-			  })
-			}});
+			  })},1000);
+			}
 		  }
 
 		  // Call to FAA and parse the result

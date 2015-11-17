@@ -26,7 +26,7 @@ var AuthRouter = (function () {
         passport.use(new FacebookStrategy({
             clientID: '1646694312239569',
             clientSecret: '01458760d8b21ff2649a8d029b480f57',
-            callbackURL: "http://50.67.72.189:3000/auth/facebook/callback",
+            callbackURL: "http://localhost:3000/auth/facebook/callback",
             enableProof: false
         }, function (accessToken, refreshToken, profile, done) {
             users.update({ uid: profile.id }, { uid: profile.id }, { upsert: true }, //these should be in a user service
@@ -41,7 +41,7 @@ var AuthRouter = (function () {
                 });
             });
         }));
-        router.get('/facebook', passport.authenticate('facebook'));
+        router.get('/facebook', passport.authenticate('facebook', { scope: ['email'] }));
         router.get('/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/' }), function (req, res) {
             // Successful authentication, redirect home.
             res.redirect('/');

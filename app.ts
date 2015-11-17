@@ -1,5 +1,8 @@
 ///<reference path='types/DefinitelyTyped/node/node.d.ts'/>
 ///<reference path='types/DefinitelyTyped/express/express.d.ts'/> 
+///<reference path='public/javascripts/ServerCommService.ts'/> 
+///<reference path='public/javascripts/Airport.ts'/> 
+///<reference path='public/javascripts/BuildMap.ts'/> 
 interface Error {
 
   status ? : number;
@@ -25,7 +28,6 @@ class Application {
     var routes = require('./routes/index');
     var users = require('./routes/users');
     var auth = require('./routes/auth');
-
     var app = express();
 
     // view engine setup
@@ -44,6 +46,8 @@ class Application {
 	  req.monk = monk;
 	  req.mongo = mongo;
 	  req.http = http;
+	  req.serverCommInstance = new ServerCommService(req)
+	  req.next = next;
       next();
     });
     app.use(cookieParser());
