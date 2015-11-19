@@ -13,3 +13,45 @@ block content
         li= result.getName()
         li= result.getTemp()
         li= result.getWind()
+
+  body
+    #fb-root
+    
+    a(href='#', onclick='postToFb()') Post to Facebook
+  
+  script.
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId       :'1646694312239569',
+        status      : true, // check login status
+        cookies     : true, // enable cookies to allow the server to access the session
+        xfbml       : true  // parse XFBML
+      });
+    };
+
+    // Load the SDK Asynchronously
+    (function() {
+      var e = document.createElement('script');
+      e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+      e.async = true;
+      document.getElementById('fb-root').appendChild(e);
+    }());
+    
+    for (var i = 0; i < resultsList.length(); i++) {
+      flightRoute.conat(">> ");
+      flightRoute.conat(resultsList[i].getCode());
+    }
+
+    var flightRoute = ""; // this needs to be a string of actual route to be added in later
+
+    function postToFb() {
+      var obj = {
+        method:      'feed',
+        link:        'https://google.com', // to be changed later
+        picture:     'https://domain.tld/75x75.jpg', // to be changed later
+        name:        'My Travel Plans',
+        caption:     'AirTime Application ',
+        description: 'My Flight ' + flightRoute // My Flight >> LAX >> SFO >> ALX >> etc
+      };
+      FB.ui(obj);
+    }

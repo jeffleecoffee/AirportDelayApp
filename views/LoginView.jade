@@ -9,7 +9,9 @@ html
       br
       a(id='logout', class='button', href='/auth/logout') Logout
       br
-      a(id='request', class='button', href='/LoadUserHistory') Give Me RequestView
+      a(id='request', class='button', href='/RequestView') Give Me RequestView
+      // br
+      // a(href='#', onclick='postToFb()') Post to Facebook
 
     br
     span#user-info
@@ -17,8 +19,27 @@ html
     span#user-stat
     
   script(src='http://code.jquery.com/jquery-2.1.4.min.js')
-
+  // body
+  //   #fb-root
   script.
+    // window.fbAsyncInit = function() {
+    //   FB.init({
+    //     appId       :'1646694312239569',
+    //     status      : true, // check login status
+    //     cookies     : true, // enable cookies to allow the server to access the session
+    //     xfbml       : true  // parse XFBML
+    //   });
+    // };
+
+    // // Load the SDK Asynchronously
+    // (function() {
+    //   var e = document.createElement('script');
+    //   e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+    //   e.async = true;
+    //   document.getElementById('fb-root').appendChild(e);
+    // }());
+
+
     var user = !{JSON.stringify(user === undefined ? null : user)};
 
     if (user == null) {
@@ -32,3 +53,18 @@ html
       $('#user-info').text("UID: " + user.uid);  
       $('#user-stat').text("FB status: connected");       
     }
+
+    // var flightRoute = "LAX then SFO";
+
+    // function postToFb() {
+    //   var obj = {
+    //     method:      'feed',
+    //     link:        'https://google.com',
+    //     picture:     'https://domain.tld/75x75.jpg',
+    //     name:        'My Travel Plans',
+    //     caption:     'AirTime Application ',
+    //     description: 'My Flight: ' + flightRoute
+    //   };
+    //   FB.ui(obj);
+    // }
+
