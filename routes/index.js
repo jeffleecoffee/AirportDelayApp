@@ -411,7 +411,8 @@ var ViewRouter = (function () {
         router.get('/LoadUserHistory', checkAuthentication, function (req, res) {
             var db = req.db;
             var collection = db.get('users');
-            collection.update({ "uid": req.user.uid }, { $set: { history: ["LAX", "BOS", "SFO", "ATL"] } });
+            /* Test Data */
+            /*collection.update({"uid":req.user.uid},{$set:{history:["LAX","BOS","SFO","ATL"]}});*/
             collection.find({ "uid": req.user.uid }, {}, function (e, docs) {
                 res.render('RequestView', { title: 'Air Time', user: req.user, userList: docs });
             });
