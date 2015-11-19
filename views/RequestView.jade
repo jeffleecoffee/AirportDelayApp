@@ -14,6 +14,13 @@ block content
   span#user-info
   br
   span#user-stat 
+  br
+  h1.
+    User History List
+  ul
+    each user in userList
+      each airport in user.history
+        li=airport
   
 script(src='http://code.jquery.com/jquery-2.1.4.min.js')
 
@@ -31,7 +38,7 @@ script.
       $('#user-info').text("UID: " + user.uid);  
       $('#user-stat').text("FB status: connected");       
     }  
-    
+
     var countMidpoint = 1;
     function addMidpoint(){
       var inputName = "Midpoint"+countMidpoint;

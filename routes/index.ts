@@ -9,8 +9,9 @@ class ViewRouter {
     static createRouter() {
         var express = require('express');
         var router = express.Router();
-
-		var monk = require('monk');
+        
+        var monk = require('monk');
+        
         var airports = new Array();
 
         function checkAuthentication(request, response, next) {
@@ -26,8 +27,16 @@ class ViewRouter {
         router.get('/', function(req, res, next) {
           res.render('LoginView', { title: 'AirTime', user: req.user });
         });
-        router.get('/RequestView', checkAuthentication, function(req, res) {
-          res.render('RequestView', {title: 'AirTime', map: 'test', user:req.user });
+        router.get('/LoadUserHistory',checkAuthentication, function(req,res){
+            var db = req.db;
+            var collection = db.get('users');
+            
+            /* Test Data */
+            /*collection.update({"uid":req.user.uid},{$set:{history:["LAX","BOS","SFO","ATL"]}});*/
+
+            collection.find({"uid":req.user.uid},{},function(e,docs){
+                res.render('RequestView',{title:'Air Time',user:req.user, userList:docs});
+            });
         });
         router.get('/ResultView', checkAuthentication, function(req, res) {
 		  req.serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports);res.render('ResultView', {title: 'AirTime', resultsList: this.airports,user: req.user}); },["1"]);
@@ -51,4 +60,3 @@ class ViewRouter {
     }
 }
 module.exports = ViewRouter.createRouter();
-
