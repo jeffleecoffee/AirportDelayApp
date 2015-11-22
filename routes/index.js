@@ -411,23 +411,50 @@ var ViewRouter = (function () {
         router.get('/LoadUserHistory', checkAuthentication, function (req, res) {
             var db = req.db;
             var collection = db.get('users');
-            /* Test Data */
-            /*collection.update({"uid":req.user.uid},{$set:{history:["LAX","BOS","SFO","ATL"]}});*/
+            collection.update({ "uid": req.user.uid }, { $push: { history: ["LAX"] } });
             collection.find({ "uid": req.user.uid }, {}, function (e, docs) {
                 res.render('RequestView', { title: 'Air Time', user: req.user, userList: docs });
             });
         });
         router.post('/savecodes', function (req, res) {
-            var departure = req.body.startcode;
-            var arrival = req.body.endcode;
+            var id = req.user.uid;
             var db = req.db;
-            var testColl = db.get("Htest");
-            testColl.update({ uid: "Test123" }, { $push: { history: departure } });
-            testColl.update({ uid: "Test123" }, { $push: { history: arrival } });
-            res.redirect("ResultView");
+            var collection = db.get("users");
+            var letters = /^[A-Za-z]+$/;
+            var start = req.body.start;
+            var dest = req.body.destination;
+            function pushCode(input) {
+                var code = input;
+                if (code != undefined) {
+                    if (code.length == 3 && code == code.toUpperCase()
+                        && code.match(letters)) {
+                        collection.update({ uid: id }, { $push: { history: code } });
+                    }
+                    else {
+                        res.render('error', {
+                            message: "You have inserted an invalid airport code!",
+                            error: {}
+                        });
+                    }
+                }
+            }
+            var start = req.body.start;
+            pushCode(start);
+            var i = 1;
+            while (i > 0) {
+                var mid = req.body['Midpoint' + i];
+                if (mid == undefined) {
+                    break;
+                }
+                pushCode(mid);
+                i++;
+            }
+            var dest = req.body.destination;
+            pushCode(dest);
+            res.redirect("/ResultView");
         });
-        router.get('/ResultView', function (req, res) {
-            res.render('ResultView', { title: 'AirTime', resultsList: this.airports });
+        router.get('/ResultView', checkAuthentication, function (req, res) {
+            req.serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports); res.render('ResultView', { title: 'AirTime', resultsList: this.airports, user: req.user }); }, ["1"]);
         });
         router.get('/MapView', function (req, res) {
             console.log("map");

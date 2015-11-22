@@ -40,19 +40,50 @@ class ViewRouter {
         });
 
         router.post('/savecodes', function(req, res) {
-            var departure = req.body.startcode;
-            var arrival = req.body.endcode;
-            
+            var id = req.user.uid;
             var db = req.db;
-            var testColl = db.get("Htest");
-            testColl.update(
-              {uid: "Test123"},
-              {$push: {history: departure}});
-            testColl.update(
-              {uid: "Test123"},
-              {$push: {history: arrival}});
+            var collection = db.get("users");
+            var letters = /^[A-Za-z]+$/;
 
-            res.redirect("ResultView");
+            var start = req.body.start;
+            var dest = req.body.destination;
+            
+            
+            function pushCode(input) {
+                var code = input;
+                if(code != undefined) {
+                    if (code.length == 3 && code == code.toUpperCase()
+                        && code.match(letters)) {
+                        collection.update(
+                            {uid: id},
+                            {$push: {history: code}});
+                    }
+                    else {
+                        res.render('error', {
+                        message: "You have inserted an invalid airport code!",
+                        error: {}
+                    })
+                    }
+                }
+            }
+            
+            var start =req.body.start;
+            pushCode(start);
+
+            var i = 1;
+            while(i > 0) {
+                var mid = req.body['Midpoint' + i];
+                if (mid == undefined) {
+                    break;
+                }
+                pushCode(mid);
+                i++;
+            }
+
+            var dest = req.body.destination;
+            pushCode(dest);
+            
+            res.redirect("/ResultView");
         })
 
 
