@@ -408,8 +408,14 @@ var ViewRouter = (function () {
         router.get('/', function (req, res, next) {
             res.render('LoginView', { title: 'AirTime', user: req.user });
         });
-        router.get('/RequestView', checkAuthentication, function (req, res) {
-            res.render('RequestView', { title: 'AirTime', map: 'test', user: req.user });
+        router.get('/LoadUserHistory', checkAuthentication, function (req, res) {
+            var db = req.db;
+            var collection = db.get('users');
+            /* Test Data */
+            /*collection.update({"uid":req.user.uid},{$set:{history:["LAX","BOS","SFO","ATL"]}});*/
+            collection.find({ "uid": req.user.uid }, {}, function (e, docs) {
+                res.render('RequestView', { title: 'Air Time', user: req.user, userList: docs });
+            });
         });
         router.post('/savecodes', function (req, res) {
             var departure = req.body.startcode;
