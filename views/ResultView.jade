@@ -1,25 +1,29 @@
-block content
-  h1= title
-  p Results Page
-  iframe(width='800', height='600', scrolling='yes', frameborder='yes', src= 'MapView')
-  h1. map
-    map
-  h1.
-    Results List
-  ul
-    each result in resultsList
-      p xxxxxxxxxxxxx
-        li= result.getCode()
-        li= result.getName()
-        li= result.getTemp()
-        li= result.getWind()
-
+doctype html
+html(lang="en")
+  head
+    h1= title
+    p Results Page
   body
-    #fb-root
-    
+    iframe(width='800', height='600', scrolling='yes', frameborder='yes', src= 'MapView')
+    h1. map
+      map
     a(href='#', onclick='postToFb()') Post to Facebook
-  
+    h1.
+      Results List
+    ul
+      each result in resultsList
+        p xxxxxxxxxxxxx
+          li= result.getCode()
+          li= result.getName()
+          li= result.getTemp()
+          li= result.getWind()
+
+    #fb-root
+
+
   script.
+    var resultsList = !{JSON.stringify(resultsList === undefined ? null : resultsList)};
+
     window.fbAsyncInit = function() {
       FB.init({
         appId       :'1646694312239569',
@@ -36,13 +40,17 @@ block content
       e.async = true;
       document.getElementById('fb-root').appendChild(e);
     }());
-    
-    for (var i = 0; i < resultsList.length(); i++) {
-      flightRoute.conat(">> ");
-      flightRoute.conat(resultsList[i].getCode());
-    }
 
-    var flightRoute = ""; // this needs to be a string of actual route to be added in later
+    function getFlightRouteString () {
+      var string = "";
+      resultsList.forEach(function(result){
+        if (string != "") {
+          string = string + " >> ";
+        }
+        string = string + result.code;
+      });
+      return string;
+    }
 
     function postToFb() {
       var obj = {
@@ -51,7 +59,7 @@ block content
         picture:     'https://domain.tld/75x75.jpg', // to be changed later
         name:        'My Travel Plans',
         caption:     'AirTime Application ',
-        description: 'My Flight ' + flightRoute // My Flight >> LAX >> SFO >> ALX >> etc
+        description: 'My Flight: ' + getFlightRouteString()// My Flight >> LAX >> SFO >> ALX >> etc
       };
       FB.ui(obj);
     }
