@@ -38,6 +38,55 @@ class ViewRouter {
                 res.render('RequestView',{title:'Air Time',user:req.user, userList:docs});
             });
         });
+
+        router.post('/savecodes', function(req, res) {
+            var id = req.user.uid;
+            var db = req.db;
+            var collection = db.get("users");
+            var letters = /^[A-Za-z]+$/;
+
+            var start = req.body.start;
+            var dest = req.body.destination;
+            
+            
+            function pushCode(input) {
+                var code = input;
+                if(code != undefined) {
+                    if (code.length == 3 && code == code.toUpperCase()
+                        && code.match(letters)) {
+                        collection.update(
+                            {uid: id},
+                            {$push: {history: code}});
+                    }
+                    else {
+                        res.render('error', {
+                        message: "You have inserted an invalid airport code!",
+                        error: {}
+                    })
+                    }
+                }
+            }
+            
+            var start =req.body.start;
+            pushCode(start);
+
+            var i = 1;
+            while(i > 0) {
+                var mid = req.body['Midpoint' + i];
+                if (mid == undefined) {
+                    break;
+                }
+                pushCode(mid);
+                i++;
+            }
+
+            var dest = req.body.destination;
+            pushCode(dest);
+            
+            res.redirect("/ResultView");
+        })
+
+
         router.get('/ResultView', checkAuthentication, function(req, res) {
 		  req.serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports);res.render('ResultView', {title: 'AirTime', resultsList: this.airports,user: req.user,results: this.airports}); },["1"]);
         });
