@@ -80,7 +80,7 @@ var AirportOperations;
         function AirportMap(mapDiv) {
             this.name = "AirportMap";
             this.options = {
-                center: new google.maps.LatLng(39.5, -98.5),
+                center: new google.maps.LatLng(39.5, -98.35),
                 zoom: 3,
                 MapTypeId: google.maps.MapTypeId.TERRAIN
             };
@@ -105,7 +105,7 @@ var AirportOperations;
         function AirportMarker(airportMap, airport) {
             this.map = airportMap.getMap();
             this.airport = airport;
-            this.position = this.airport.getLocation();
+            this.position = this.airport.location;
             this.markerOptions = {
                 position: this.position,
                 clickable: true,
@@ -119,7 +119,7 @@ var AirportOperations;
                     '</div>' +
                     '<h1 id="firstHeading" class="firstHeading">' + this.airport.code + '</h1>' +
                     '<div id="bodyContent">' +
-                    '<h3>Current temperature is ' + this.airport.avg + ' .</h3>' +
+                    '<h3>Current temperature is ' + this.airport.temp + ' .</h3>' +
                     '<h3>Current wind speed is ' + this.airport.wind + ' .</h3>' +
                     '<h3>There is no Delay.</h3>' +
                     '</div>' +
@@ -196,11 +196,11 @@ var AirportOperations;
                     }
                 }
                 function getGeoCodes(nextAddress) {
-                    geocoder.geocode({ 'address': airports[nextAddress].getCode() + " airport USA" }, function (results, status) {
+                    geocoder.geocode({ 'address': airports[nextAddress].code + " airport USA" }, function (results, status) {
                         if (status === google.maps.GeocoderStatus.OK) {
                             console.log("Success!!" + nextAddress);
                             coordinates.push(results[0].geometry.location);
-                            airports[nextAddress].setLocation(results[0].geometry.location);
+                            airports[nextAddress].location = results[0].geometry.location;
                             createMarker(map, airports[nextAddress]);
                         }
                         else {
@@ -277,6 +277,7 @@ function initMap() {
     airports[1].setAvg("");
     airports[2].setAvg("40");
     airports[3].setAvg("40");
-    var buildNewMap = new AirportOperations.BuildMap(airports);
+    console.log(airports1);
+    var buildNewMap = new AirportOperations.BuildMap(airports1);
 }
 ;

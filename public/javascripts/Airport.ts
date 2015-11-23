@@ -10,6 +10,9 @@ module AirportOperations{
     private temp: string;
     private wind: string;
     private delay: string;
+    private min: string;
+    private max: string;
+    private avg: string;
     private location: google.maps.LatLng;
 
     constructor(codeInput: string) {
