@@ -1,18 +1,103 @@
 body {
   padding: 50px;
+  /*padding:0;*/
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-a {
-  color: #00B7FF;
+#bodyContainer{
+	padding-top:50px;
+	padding-left:50px;
+	padding-right:50px;
 }
 
-/* Map Configuration */
+.navbar{
+	margin-bottom:0;
+}
+
+.jumbotron{
+	/*padding-left:50px;
+	padding-right:50px;*/
+	/*background-repeat:no-repeat;*/
+	height: 100%;
+	background-size: auto 220%;
+    background-position: center center;
+    background-image:url(Death_to_stock_photography_wild_9.jpg);
+}
+
+#navbarTitle{
+	margin:8px;
+	color: #ffffff
+}
+
+#navbarTitle:hover{
+	color: #ec5355
+}
+
+#loginRow{
+	padding-top:100px;
+}
+
+#loginBtn, #logoutBtn, #requestBtn{
+	border-style: bold;
+	border-color: #ffffff;
+}
+
+#loginBtn{
+	margin-top:20px;
+}
+
+#requestRow{
+	padding-top:50px;
+}
+
+label{
+	text-align: right;
+	float:left;
+	font-weight: bold;
+}
+
+#historyList{
+	list-style: none;
+}
+
+#addAirport{
+	float:left;
+}
+
+#btnSubmit{
+	float:right;
+}
+
+#buttonRow{
+	padding-top:15px;
+}
+
+#userInfo{
+	padding-top:20px;
+}
+
+.btn{
+	margin-bottom:10px;
+}
+
+a{
+  color: #ffffff;
+}
+
+a:hover{
+	color:#ec5355;
+	text-decoration:none;
+}
+
+/*Map Configuration */
 html, body { 
 	height: 100%; margin: 0; padding: 0; 
 }
 
+
 /* Map Configuration */
 #map { 
-	height: 100%; 
+	height: 100%;  
+	overflow: visible;
 }
+

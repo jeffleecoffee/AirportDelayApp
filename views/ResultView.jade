@@ -1,23 +1,28 @@
+extends layout
 block content
-  h1= title
-  p Results Page
-  iframe(width='800', height='600', scrolling='yes', frameborder='yes', src= 'MapView')
-  h1. map
-    map
-  h1.
-    Results List
-  ul
-    each result in resultsList
-      p xxxxxxxxxxxxx
-        li= result.getCode()
-        li= result.getName()
-        li= result.getTemp()
-        li= result.getWind()
-
-  body
+  div.container#bodyContainer
+    h1.text-center My Journey
+    iframe(width='800', height='600', scrolling='yes', frameborder='yes', src= 'MapView')
+    table.table.table-striped.tablehover
+      thead
+        tr
+          th Code
+          th Name
+          th Temperature
+          th Wind Speed
+      tbody
+        each result in resultsList
+          tr
+            td=result.getCode()
+            td=result.getName()
+            td=result.getTemp()
+            td=result.getWind()
     #fb-root
-    
-    a(href='#', onclick='postToFb()') Post to Facebook
+      
+    div(style="text-align: center;")
+      button#shareToFB(type="submit",class="btn btn-primary")
+        a(href='#', onclick='postToFb()') Share My Journey on   
+          i.fa.fa-facebook-square.fa-lg
   
   script.
     window.fbAsyncInit = function() {
@@ -55,3 +60,4 @@ block content
       };
       FB.ui(obj);
     }
+  

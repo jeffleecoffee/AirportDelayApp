@@ -34,12 +34,12 @@ class ViewRouter {
             /* Test Data */
             /*collection.update({"uid":req.user.uid},{$set:{history:["LAX","BOS","SFO","ATL"]}});*/
 
-            collection.find({"uid":req.user.uid},{},function(e,docs){
+            collection.find({"uid":req.user.uid},{_id: 0, history:1},function(e,docs){
                 res.render('RequestView',{title:'Air Time',user:req.user, userList:docs});
             });
         });
         router.get('/ResultView', checkAuthentication, function(req, res) {
-		  req.serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports);res.render('ResultView', {title: 'AirTime', resultsList: this.airports,user: req.user}); },["1"]);
+		  req.serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports);res.render('ResultView', {title: 'AirTime', resultsList: this.airports,user: req.user,results: this.airports}); },["1"]);
         });
         router.get('/MapView', function(req, res) {
 		  console.log("map");

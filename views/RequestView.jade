@@ -1,47 +1,36 @@
+extends layout
 block content
-  h1= title
-  p Request Page
-  form#formRequest(name="submit",method="get",action="/ResultView")
-    label Start: 
-    input#start(type='text', name='start')
-    div#midpointGroup 
-    br
-    label Destination:
-    input#destination(type='text', name='destination')
-    button#addAirport(type='button', onclick='addMidpoint()') Add Airport
-    button#btnSubmit(type="submit") Request
-  br
-  span#user-info
-  br
-  span#user-stat 
-  br
-  h1.
-    User History List
-  ul
-    each user in userList
-      each airport in user.history
-        li=airport
+  div.container#bodyContainer
+    div.row.text-center
+      h1 Where Are You Heading?
+    div.row#requestRow
+      div.col-md-4.col-md-offset-2.text-center
+        form.form-horizontal#formRequest(name="submit",method="get",action="/ResultView")
+          fieldset
+            legend My Journey
+            p
+              label.control-label(for='start') Start:
+              input#start(type='text', name='start')
+            div#midpointGroup
+            p
+              label.control-label(for='destination') Destination
+              input#destination(type='text', name='destination') 
+            p#buttonRow
+              button#addAirport(type='button', class="btn btn-warning", onclick='addMidpoint()') Add Airport
+              button#btnSubmit(type="submit",class="btn btn-primary") Request
+      div.col-md-4.text-center
+        legend My Previous Journeys
+        ul#historyList
+          each user in userList
+            if(user.history)
+              each airport in user.history
+                li=airport
+            else 
+              li 
+                h4 Start a new journey and we will keep track of it! 
+    div.row.text-center
+      span#user-info
+      br
+      span#user-stat 
+      br
   
-script(src='http://code.jquery.com/jquery-2.1.4.min.js')
-
-script.
-    var user = !{JSON.stringify(user === undefined ? null : user)};
-
-    if (user == null) {
-      $('#logout').css('display', 'none');
-      $('#request').css('display', 'none');       
-      $('#user-info').css('display', 'none');  
-      $('#user-stat').css('display', 'none'); 
-    } 
-    else {
-      $('#login').css('display', 'none');  
-      $('#user-info').text("UID: " + user.uid);  
-      $('#user-stat').text("FB status: connected");       
-    }  
-
-    var countMidpoint = 1;
-    function addMidpoint(){
-      var inputName = "Midpoint"+countMidpoint;
-      document.getElementById("midpointGroup").innerHTML+='<br/><label>'+inputName+':</label><input type="text" id="'+inputName+'" name="'+inputName+'" />';
-      countMidpoint++;
-    }
