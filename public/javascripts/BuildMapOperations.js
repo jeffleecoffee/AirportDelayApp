@@ -10,6 +10,10 @@ var AirportOperations;
             this.name = "";
             this.temp = "";
             this.wind = "";
+            this.delay = "";
+            this.min = "";
+            this.max = "";
+            this.avg = "";
         }
         Airport.prototype.setName = function (nameInput) {
             this.name = nameInput;
@@ -22,6 +26,18 @@ var AirportOperations;
         };
         Airport.prototype.setLocation = function (location) {
             this.location = location;
+        };
+        Airport.prototype.setDelay = function (delayInput) {
+            this.delay = delayInput;
+        };
+        Airport.prototype.setMin = function (minInput) {
+            this.min = minInput;
+        };
+        Airport.prototype.setMax = function (maxInput) {
+            this.max = maxInput;
+        };
+        Airport.prototype.setAvg = function (avgInput) {
+            this.avg = avgInput;
         };
         Airport.prototype.getCode = function () {
             return this.code;
@@ -38,6 +54,18 @@ var AirportOperations;
         Airport.prototype.getLocation = function () {
             return this.location;
         };
+        Airport.prototype.getDelay = function () {
+            return this.delay;
+        };
+        Airport.prototype.getMin = function () {
+            return this.min;
+        };
+        Airport.prototype.getMax = function () {
+            return this.max;
+        };
+        Airport.prototype.getAvg = function () {
+            return this.avg;
+        };
         return Airport;
     })();
     AirportOperations.Airport = Airport;
@@ -52,7 +80,7 @@ var AirportOperations;
         function AirportMap(mapDiv) {
             this.name = "AirportMap";
             this.options = {
-                center: new google.maps.LatLng(53.83305, -1.66412),
+                center: new google.maps.LatLng(39.5, -98.5),
                 zoom: 3,
                 MapTypeId: google.maps.MapTypeId.TERRAIN
             };
@@ -77,22 +105,52 @@ var AirportOperations;
         function AirportMarker(airportMap, airport) {
             this.map = airportMap.getMap();
             this.airport = airport;
-            this.position = this.airport.location;
+            this.position = this.airport.getLocation();
             this.markerOptions = {
                 position: this.position,
                 clickable: true,
                 map: this.map
             };
             console.log(this.airport);
-            var airportInfo = '<div id="content">' +
-                '<div id="siteNotice">' +
-                '</div>' +
-                '<h1 id="firstHeading" class="firstHeading">' + this.airport.code + '</h1>' +
-                '<div id="bodyContent">' +
-                '<h3>Current temperature is ' + this.airport.temp + ' .</h3>' +
-                '<h3>Current wind speed is ' + this.airport.wind + ' .</h3>' +
-                '</div>' +
-                '</div>';
+            var airportInfo;
+            if (this.airport.delay === "false") {
+                airportInfo = '<div id="content">' +
+                    '<div id="siteNotice">' +
+                    '</div>' +
+                    '<h1 id="firstHeading" class="firstHeading">' + this.airport.code + '</h1>' +
+                    '<div id="bodyContent">' +
+                    '<h3>Current temperature is ' + this.airport.avg + ' .</h3>' +
+                    '<h3>Current wind speed is ' + this.airport.wind + ' .</h3>' +
+                    '<h3>There is no Delay.</h3>' +
+                    '</div>' +
+                    '</div>';
+            }
+            else if ((this.airport.avg).length === 0) {
+                airportInfo =
+                    '<div id="content">' +
+                        '<div id="siteNotice">' +
+                        '</div>' +
+                        '<h1 id="firstHeading" class="firstHeading">' + this.airport.code + '</h1>' +
+                        '<div id="bodyContent">' +
+                        '<h3>Current temperature is ' + this.airport.temp + ' .</h3>' +
+                        '<h3>Current wind speed is ' + this.airport.wind + ' .</h3>' +
+                        '<h3>There is a min Delay of ' + this.airport.min + ' and max Delay of ' + this.airport.max + ' .</h3>' +
+                        '</div>' +
+                        '</div>';
+            }
+            else {
+                airportInfo =
+                    '<div id="content">' +
+                        '<div id="siteNotice">' +
+                        '</div>' +
+                        '<h1 id="firstHeading" class="firstHeading">' + this.airport.code + '</h1>' +
+                        '<div id="bodyContent">' +
+                        '<h3>Current temperature is ' + this.airport.temp + ' .</h3>' +
+                        '<h3>Current wind speed is ' + this.airport.wind + ' .</h3>' +
+                        '<h3>There is an average Delay of ' + this.airport.avg + ' .</h3>' +
+                        '</div>' +
+                        '</div>';
+            }
             this.marker = new google.maps.Marker(this.markerOptions);
             google.maps.event.addListener(this.marker, 'click', function () {
                 var infoWindow = new google.maps.InfoWindow({
@@ -138,11 +196,11 @@ var AirportOperations;
                     }
                 }
                 function getGeoCodes(nextAddress) {
-                    geocoder.geocode({ 'address': airports[nextAddress].code + " airport USA" }, function (results, status) {
+                    geocoder.geocode({ 'address': airports[nextAddress].getCode() + " airport USA" }, function (results, status) {
                         if (status === google.maps.GeocoderStatus.OK) {
                             console.log("Success!!" + nextAddress);
                             coordinates.push(results[0].geometry.location);
-                            airports[nextAddress].location = results[0].geometry.location;
+                            airports[nextAddress].setLocation(results[0].geometry.location);
                             createMarker(map, airports[nextAddress]);
                         }
                         else {
@@ -191,52 +249,6 @@ function initMap() {
     airports.push(new AirportOperations.Airport("ANC"));
     airports.push(new AirportOperations.Airport("PHX"));
     airports.push(new AirportOperations.Airport("LIT"));
-    airports.push(new AirportOperations.Airport("LAX"));
-    airports.push(new AirportOperations.Airport("DEN"));
-    airports.push(new AirportOperations.Airport("BDL"));
-    airports.push(new AirportOperations.Airport("ILG"));
-    airports.push(new AirportOperations.Airport("MIA"));
-    airports.push(new AirportOperations.Airport("ATL"));
-    airports.push(new AirportOperations.Airport("HNL"));
-    airports.push(new AirportOperations.Airport("BOI"));
-    airports.push(new AirportOperations.Airport("ORD"));
-    airports.push(new AirportOperations.Airport("IND"));
-    airports.push(new AirportOperations.Airport("DSM"));
-    airports.push(new AirportOperations.Airport("MCI"));
-    airports.push(new AirportOperations.Airport("SDF"));
-    airports.push(new AirportOperations.Airport("MSY"));
-    airports.push(new AirportOperations.Airport("BGR"));
-    airports.push(new AirportOperations.Airport("BWI"));
-    airports.push(new AirportOperations.Airport("BOS"));
-    airports.push(new AirportOperations.Airport("DTW"));
-    airports.push(new AirportOperations.Airport("MSP"));
-    airports.push(new AirportOperations.Airport("GPT"));
-    airports.push(new AirportOperations.Airport("STL"));
-    airports.push(new AirportOperations.Airport("BZN"));
-    airports.push(new AirportOperations.Airport("LNK"));
-    airports.push(new AirportOperations.Airport("LAS"));
-    airports.push(new AirportOperations.Airport("MHT"));
-    airports.push(new AirportOperations.Airport("EWR"));
-    airports.push(new AirportOperations.Airport("ABQ"));
-    airports.push(new AirportOperations.Airport("JFK"));
-    airports.push(new AirportOperations.Airport("CLT"));
-    airports.push(new AirportOperations.Airport("FAR"));
-    airports.push(new AirportOperations.Airport("CMH"));
-    airports.push(new AirportOperations.Airport("OKC"));
-    airports.push(new AirportOperations.Airport("PDX"));
-    airports.push(new AirportOperations.Airport("PHL"));
-    airports.push(new AirportOperations.Airport("PVD"));
-    airports.push(new AirportOperations.Airport("CHS"));
-    airports.push(new AirportOperations.Airport("FSD"));
-    airports.push(new AirportOperations.Airport("BNA"));
-    airports.push(new AirportOperations.Airport("DFW"));
-    airports.push(new AirportOperations.Airport("SLC"));
-    airports.push(new AirportOperations.Airport("BTV"));
-    airports.push(new AirportOperations.Airport("IAD"));
-    airports.push(new AirportOperations.Airport("SEA"));
-    airports.push(new AirportOperations.Airport("IAD"));
-    airports.push(new AirportOperations.Airport("MKE"));
-    airports.push(new AirportOperations.Airport("JAC"));
     airports[0].setName("Birmingham-Shuttlesworth International Airport");
     airports[1].setName("Ted Stevens Anchorage International Airport");
     airports[2].setName("New Castle Airport");
@@ -249,7 +261,22 @@ function initMap() {
     airports[1].setWind("50 km/h");
     airports[2].setWind("60 km/h");
     airports[3].setWind("40 km/h");
-    console.log(airports1);
-    var buildNewMap = new AirportOperations.BuildMap(airports1);
+    airports[0].setDelay("true");
+    airports[1].setDelay("true");
+    airports[2].setDelay("false");
+    airports[3].setDelay("false");
+    airports[0].setMin("");
+    airports[1].setMin("20");
+    airports[2].setMin("40");
+    airports[3].setMin("30");
+    airports[0].setMax("");
+    airports[1].setMax("60");
+    airports[2].setMax("50");
+    airports[3].setMax("70");
+    airports[0].setAvg("40");
+    airports[1].setAvg("");
+    airports[2].setAvg("40");
+    airports[3].setAvg("40");
+    var buildNewMap = new AirportOperations.BuildMap(airports);
 }
 ;

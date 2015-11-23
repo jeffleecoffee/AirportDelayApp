@@ -10,6 +10,7 @@ block content
           th Name
           th Temperature
           th Wind Speed
+          th Delay Status
       tbody
         each result in resultsList
           tr
@@ -17,6 +18,7 @@ block content
             td=result.getName()
             td=result.getTemp()
             td=result.getWind()
+            td=result.getDelay()
     #fb-root
       
     div(style="text-align: center;")

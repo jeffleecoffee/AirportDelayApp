@@ -26,15 +26,44 @@ module AirportOperations{
         map: this.map
       };
 	  console.log(this.airport);
-      var airportInfo = '<div id="content">'+
-      '<div id="siteNotice">'+
-      '</div>'+
-      '<h1 id="firstHeading" class="firstHeading">'+ this.airport.getCode() +'</h1>'+
-      '<div id="bodyContent">'+
-      '<h3>Current temperature is '+ this.airport.getTemp() +' .</h3>'+
-      '<h3>Current wind speed is '+ this.airport.getWind() +' .</h3>'+
-      '</div>'+
-      '</div>';
+    var airportInfo;
+    if (this.airport.delay === "false") {
+    airportInfo = '<div id="content">' +
+        '<div id="siteNotice">' +
+        '</div>' +
+        '<h1 id="firstHeading" class="firstHeading">' + this.airport.code + '</h1>' +
+        '<div id="bodyContent">' +
+        '<h3>Current temperature is ' + this.airport.avg + ' .</h3>' +
+        '<h3>Current wind speed is ' + this.airport.wind + ' .</h3>' +
+        '<h3>There is no Delay.</h3>' +
+        '</div>' +
+        '</div>';
+    } else if ((this.airport.avg).length === 0) {
+        airportInfo =
+        '<div id="content">' +
+        '<div id="siteNotice">' +
+        '</div>' +
+        '<h1 id="firstHeading" class="firstHeading">' + this.airport.code + '</h1>' +
+        '<div id="bodyContent">' +
+        '<h3>Current temperature is ' + this.airport.temp + ' .</h3>' +
+        '<h3>Current wind speed is ' + this.airport.wind + ' .</h3>' +
+        '<h3>There is a min Delay of ' + this.airport.min + ' and max Delay of ' + this.airport.max + ' .</h3>' +
+        '</div>' +
+        '</div>';
+      }
+      else {
+        airportInfo =
+        '<div id="content">' +
+        '<div id="siteNotice">' +
+        '</div>' +
+        '<h1 id="firstHeading" class="firstHeading">' + this.airport.code + '</h1>' +
+        '<div id="bodyContent">' +
+        '<h3>Current temperature is ' + this.airport.temp + ' .</h3>' +
+        '<h3>Current wind speed is ' + this.airport.wind + ' .</h3>' +
+        '<h3>There is an average Delay of ' + this.airport.avg + ' .</h3>' +
+        '</div>' +
+        '</div>'; 
+      }
 
       this.marker = new google.maps.Marker(this.markerOptions);
 
