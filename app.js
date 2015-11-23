@@ -10,6 +10,10 @@ var AirportOperations;
             this.name = "";
             this.temp = "";
             this.wind = "";
+            this.delay = "";
+            this.min = "";
+            this.max = "";
+            this.avg = "";
         }
         Airport.prototype.setName = function (nameInput) {
             this.name = nameInput;
@@ -22,6 +26,18 @@ var AirportOperations;
         };
         Airport.prototype.setLocation = function (location) {
             this.location = location;
+        };
+        Airport.prototype.setDelay = function (delayInput) {
+            this.delay = delayInput;
+        };
+        Airport.prototype.setMin = function (minInput) {
+            this.min = minInput;
+        };
+        Airport.prototype.setMax = function (maxInput) {
+            this.max = maxInput;
+        };
+        Airport.prototype.setAvg = function (avgInput) {
+            this.avg = avgInput;
         };
         Airport.prototype.getCode = function () {
             return this.code;
@@ -37,6 +53,18 @@ var AirportOperations;
         };
         Airport.prototype.getLocation = function () {
             return this.location;
+        };
+        Airport.prototype.getDelay = function () {
+            return this.delay;
+        };
+        Airport.prototype.getMin = function () {
+            return this.min;
+        };
+        Airport.prototype.getMax = function () {
+            return this.max;
+        };
+        Airport.prototype.getAvg = function () {
+            return this.avg;
         };
         return Airport;
     })();
@@ -98,6 +126,10 @@ var ServerCommService = (function () {
                             newAirport.setName(parsed.name);
                             newAirport.setTemp(parsed.weather.temp);
                             newAirport.setWind(parsed.weather.wind);
+                            newAirport.setDelay(parsed.delay);
+                            newAirport.setMin(parsed.status.minDelay);
+                            newAirport.setMax(parsed.status.maxDelay);
+                            newAirport.setAvg(parsed.status.avgDelay);
                             airportArray.push(newAirport);
                             console.log(count);
                             console.log(airportArray);
@@ -141,6 +173,10 @@ var ServerCommService = (function () {
                     newAirport.setName(parsed.name);
                     newAirport.setTemp(parsed.weather.temp);
                     newAirport.setWind(parsed.weather.wind);
+                    newAirport.setDelay(parsed.delay);
+                    newAirport.setMin(parsed.status.minDelay);
+                    newAirport.setMax(parsed.status.maxDelay);
+                    newAirport.setAvg(parsed.status.avgDelay);
                     airportArray.push(newAirport);
                     callback();
                 }, 1000);
@@ -183,7 +219,7 @@ var AirportOperations;
         function AirportMap(mapDiv) {
             this.name = "AirportMap";
             this.options = {
-                center: new google.maps.LatLng(53.83305, -1.66412),
+                center: new google.maps.LatLng(39.5, -98.5),
                 zoom: 3,
                 MapTypeId: google.maps.MapTypeId.TERRAIN
             };
@@ -380,6 +416,10 @@ function initMap() {
     airports[1].setWind("50 km/h");
     airports[2].setWind("60 km/h");
     airports[3].setWind("40 km/h");
+    airports[0].setDelay("true");
+    airports[1].setDelay("true");
+    airports[2].setDelay("false");
+    airports[3].setDelay("false");
     var buildNewMap = new AirportOperations.BuildMap(airports);
 }
 ;

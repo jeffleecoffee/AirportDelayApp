@@ -59,6 +59,10 @@
 					newAirport.setName(parsed.name);
 					newAirport.setTemp(parsed.weather.temp);
 					newAirport.setWind(parsed.weather.wind);
+					newAirport.setDelay(parsed.delay);
+					newAirport.setMin(parsed.status.minDelay);
+					newAirport.setMax(parsed.status.maxDelay);
+					newAirport.setAvg(parsed.status.avgDelay);
 					airportArray.push(newAirport);
 					console.log(count);
 					console.log(airportArray);
@@ -110,6 +114,10 @@
 					newAirport.setName(parsed.name);
 					newAirport.setTemp(parsed.weather.temp);
 					newAirport.setWind(parsed.weather.wind);
+					newAirport.setDelay(parsed.delay);
+					newAirport.setMin(parsed.status.minDelay);
+					newAirport.setMax(parsed.status.maxDelay);
+					newAirport.setAvg(parsed.status.avgDelay);
 					airportArray.push(newAirport);
 					callback();
 				  }, 1000);

@@ -249,7 +249,7 @@ function initMap() {
     airports[1].setWind("50 km/h");
     airports[2].setWind("60 km/h");
     airports[3].setWind("40 km/h");
-	console.log(airports1);
+    console.log(airports1);
     var buildNewMap = new AirportOperations.BuildMap(airports1);
 }
 ;

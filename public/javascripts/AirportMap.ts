@@ -12,7 +12,7 @@ module AirportOperations{
     constructor(mapDiv: Element){
       this.name = "AirportMap";
       this.options = {
-        center: new google.maps.LatLng(53.83305, -1.66412),
+        center: new google.maps.LatLng(39.5, -98.5),
         zoom: 3,
         MapTypeId: google.maps.MapTypeId.TERRAIN
       };

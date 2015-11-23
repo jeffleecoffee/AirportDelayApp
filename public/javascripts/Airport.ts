@@ -9,6 +9,7 @@ module AirportOperations{
     private name: string;
     private temp: string;
     private wind: string;
+    private delay: string;
     private location: google.maps.LatLng;
 
     constructor(codeInput: string) {
@@ -16,6 +17,10 @@ module AirportOperations{
       this.name = "";
       this.temp = "";
       this.wind = "";
+      this.delay = "";
+      this.min = "";
+      this.max = "";
+      this.avg = "";
     }
 
     setName(nameInput: string) {
@@ -32,6 +37,22 @@ module AirportOperations{
 
     setLocation(location: google.maps.LatLng){
       this.location = location;
+    }
+
+    setDelay(delayInput: string) {
+      this.delay = delayInput;
+    }
+
+    setMin(minInput: string) {
+      this.min = minInput;
+    }
+
+    setMax(maxInput: string) {
+      this.max = maxInput;
+    }
+
+    setAvg(avgInput: string) {
+      this.avg = avgInput;
     }
 
     getCode() {
@@ -52,6 +73,22 @@ module AirportOperations{
 
     getLocation(){
       return this.location;
+    }
+
+    getDelay() {
+      return this.delay;
+    }
+
+    getMin() {
+      return this.min;
+    }
+
+    getMax() {
+      return this.max;
+    }
+
+    getAvg() {
+      return this.avg;
     }
   }  
 }

@@ -87,5 +87,10 @@ function initMap(){
   airports[2].setWind("60 km/h");
   airports[3].setWind("40 km/h");
 
+  airports[0].setDelay("true");
+  airports[1].setDelay("true");
+  airports[2].setDelay("false");
+  airports[3].setDelay("false");
+
     var buildNewMap = new AirportOperations.BuildMap(airports);
 };
