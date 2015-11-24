@@ -92,7 +92,7 @@ var ServerCommService = (function () {
         var collection = this.db.get('airports');
         var trueThis = this;
         var skip = false;
-        codeArray = ["ATL", "ANC", "AUS", "BWI", "BOS", "CLT", "MDW", "ORD", "CVG", "MSP"];
+        //codeArray = ["ATL","ANC","AUS","BWI","BOS","CLT","MDW","ORD","CVG","MSP"];
         var tempAirportArray = new Array();
         var count = 0;
         var count1 = 0;
@@ -498,7 +498,7 @@ var ViewRouter = (function () {
             res.redirect("/ResultView");
         });
         router.get('/ResultView', checkAuthentication, function (req, res) {
-            req.serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports); res.render('ResultView', { title: 'AirTime', resultsList: this.airports, user: req.user, results: this.airports }); }, ["1"]);
+            req.serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports); res.render('ResultView', { title: 'AirTime', resultsList: this.airports, user: req.user, results: this.airports }); }, codeArray);
         });
         router.get('/MapView', function (req, res) {
             console.log("map");
