@@ -13,6 +13,7 @@ class ViewRouter {
         var monk = require('monk');
         
         var airports = new Array();
+        var codeArray = new Array();
 
         function checkAuthentication(request, response, next) {
             if (request.isAuthenticated()){
@@ -29,7 +30,7 @@ class ViewRouter {
         });
         router.get('/LoadUserHistory',checkAuthentication, function(req,res){
             var db = req.db;
-            var collection = db.get('users');
+            var collection = db.get('userhistory');
             
             /* Test Data */
             /*collection.update({"uid":req.user.uid},{$set:{history:["LAX","BOS","SFO","ATL"]}});*/
@@ -42,8 +43,9 @@ class ViewRouter {
         router.post('/savecodes', function(req, res) {
             var id = req.user.uid;
             var db = req.db;
-            var collection = db.get("users");
+            var collection = db.get("userhistory");
             var letters = /^[A-Za-z]+$/;
+            var airports = new Array();
 
             var start = req.body.start;
             var dest = req.body.destination;
@@ -56,7 +58,9 @@ class ViewRouter {
                         && code.match(letters)) {
                         collection.update(
                             {uid: id},
-                            {$push: {history: code}});
+                            {$push: {history: code}},
+                            {upsert: true});
+                        codeArray.push(code);
                     }
                     else {
                         res.render('error', {
@@ -82,13 +86,13 @@ class ViewRouter {
 
             var dest = req.body.destination;
             pushCode(dest);
-            
+
             res.redirect("/ResultView");
         })
 
 
         router.get('/ResultView', checkAuthentication, function(req, res) {
-		  req.serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports);res.render('ResultView', {title: 'AirTime', resultsList: this.airports,user: req.user,results: this.airports}); },["1"]);
+		  req.serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports);res.render('ResultView', {title: 'AirTime', resultsList: this.airports,user: req.user,results: this.airports}); },codeArray);
         });
         router.get('/MapView', function(req, res) {
 		  console.log("map");

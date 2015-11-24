@@ -61,5 +61,5 @@ function initMap(){
   airports[2].setAvg("40");
   airports[3].setAvg("40");
 
-    var buildNewMap = new AirportOperations.BuildMap(airports);
+  var buildNewMap = new AirportOperations.BuildMap(airports);
 };

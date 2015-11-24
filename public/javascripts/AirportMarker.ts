@@ -64,7 +64,6 @@ module AirportOperations{
         '</div>' +
         '</div>'; 
       }
-
       this.marker = new google.maps.Marker(this.markerOptions);
 
       google.maps.event.addListener(this.marker, 'click', function(){
