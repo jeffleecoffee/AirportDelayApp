@@ -92,7 +92,8 @@ var ServerCommService = (function () {
         var collection = this.db.get('airports');
         var trueThis = this;
         var skip = false;
-        codeArray = ["ATL", "ANC", "AUS", "BWI", "BOS", "CLT", "MDW", "ORD", "CVG"];
+        /*codeArray = ["ATL","ANC","AUS","BWI","BOS","CLT","MDW","ORD","CVG"];
+        */
         var tempAirportArray = new Array();
         var count = 0;
         var count1 = 0;
@@ -458,6 +459,7 @@ var ViewRouter = (function () {
             var db = req.db;
             var collection = db.get("users");
             var letters = /^[A-Za-z]+$/;
+            var airports = new Array();
             var start = req.body.start;
             var dest = req.body.destination;
             function pushCode(input) {
@@ -466,6 +468,7 @@ var ViewRouter = (function () {
                     if (code.length == 3 && code == code.toUpperCase()
                         && code.match(letters)) {
                         collection.update({ uid: id }, { $push: { history: code } });
+                        airports.push(code);
                     }
                     else {
                         res.render('error', {
@@ -488,10 +491,14 @@ var ViewRouter = (function () {
             }
             var dest = req.body.destination;
             pushCode(dest);
+            console.log("Airports has:");
+            for (var i = 0; i < airports.length; i++) {
+                console.log(airports[i]);
+            }
             res.redirect("/ResultView");
         });
         router.get('/ResultView', checkAuthentication, function (req, res) {
-            req.serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports); res.render('ResultView', { title: 'AirTime', resultsList: this.airports, user: req.user, results: this.airports }); }, ["1"]);
+            req.serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports); res.render('ResultView', { title: 'AirTime', resultsList: this.airports, user: req.user, results: this.airports }); }, /*["1"]*/ airports);
         });
         router.get('/MapView', function (req, res) {
             console.log("map");
