@@ -30,7 +30,7 @@ class ViewRouter {
         });
         router.get('/LoadUserHistory',checkAuthentication, function(req,res){
             var db = req.db;
-            var collection = db.get('users');
+            var collection = db.get('userhistory');
             
             /* Test Data */
             /*collection.update({"uid":req.user.uid},{$set:{history:["LAX","BOS","SFO","ATL"]}});*/
@@ -43,7 +43,7 @@ class ViewRouter {
         router.post('/savecodes', function(req, res) {
             var id = req.user.uid;
             var db = req.db;
-            var collection = db.get("users");
+            var collection = db.get("userhistory");
             var letters = /^[A-Za-z]+$/;
             var airports = new Array();
 
@@ -58,7 +58,8 @@ class ViewRouter {
                         && code.match(letters)) {
                         collection.update(
                             {uid: id},
-                            {$push: {history: code}});
+                            {$push: {history: code}},
+                            {upsert: true});
                         codeArray.push(code);
                     }
                     else {
@@ -85,11 +86,7 @@ class ViewRouter {
 
             var dest = req.body.destination;
             pushCode(dest);
-            console.log("Airports has:");
-            for(var i = 0; i < airports.length; i++) {
-                console.log(airports[i]);
-            }
-            
+
             res.redirect("/ResultView");
         })
 
