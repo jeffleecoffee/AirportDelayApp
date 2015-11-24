@@ -1,6 +1,6 @@
 extends layout
 block content
-  div.jumbotron
+  div.container#loginContainer
     div.row.text-center#loginRow 
        h1 You Could be 
        h1 Up 
@@ -8,18 +8,34 @@ block content
     div.row.text-center
       div.col-md-4.col-md-offset-4
         div
-          button#loginBtn(type='button',class='btn btn-primary btn-lg')
-            a(id='login', class='button', href='/auth/facebook') Facebook Login  
-              i.fa.fa-facebook-square.fa-lg
+          a(id='login', class='btn btn-primary btn-lg', href='/auth/facebook') Facebook Login 
+            i.fa.fa-facebook-square.fa-lg
           br
-          button#logoutBtn(type='button',class='btn btn-primary btn-lg')
-            a(id='logout', class='button', href='/auth/logout') Logout
+          a(id='logout', class='btn btn-primary btn-lg', href='/auth/logout') Logout
           br
-          button#requestBtn(type='button',class='btn btn-primary btn-lg')
-            a(id='request', class='button', href='/LoadUserHistory') Start My Journey 
-              i.fa.fa-plane.fa-lg
+          a(id='request', class='btn btn-primary btn-lg', href='/LoadUserHistory') Start My Journey 
+            i.fa.fa-plane.fa-lg
         div#userInfo
           br
           span#user-info
           br
           span#user-stat
+  script(src='http://code.jquery.com/jquery-2.1.4.min.js')
+  script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js') 
+  script.
+    var user = !{JSON.stringify(user === undefined ? null : user)};
+
+    if (user == null) {
+      $('#logout').css('display', 'none');
+      $('#logoutBtn').css('display', 'none');
+      $('#request').css('display', 'none'); 
+      $('#requestBtn').css('display', 'none');       
+      $('#user-info').css('display', 'none');  
+      $('#user-stat').css('display', 'none'); 
+    } 
+    else {
+      $('#login').css('display', 'none');
+      $('#loginBtn').css('display', 'none');  
+      $('#user-info').text("UID: " + user.uid);  
+      $('#user-stat').text("FB status: connected");       
+    }

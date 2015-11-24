@@ -14,8 +14,9 @@ body {
 	margin-bottom:0;
 }
 
-.jumbotron{
+#loginContainer{
 	height: 100%;
+	width: 100%;
 	background-size: auto 220%;
     background-position: center center;
     background-image:url(Death_to_stock_photography_wild_9.jpg);
@@ -34,12 +35,12 @@ body {
 	padding-top:100px;
 }
 
-#loginBtn, #logoutBtn, #requestBtn{
+#login, #logout, #request{
 	border-style: bold;
 	border-color: #ffffff;
 }
 
-#loginBtn{
+#login{
 	margin-top:20px;
 }
 

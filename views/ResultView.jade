@@ -22,6 +22,68 @@ block content
     #fb-root
       
     div(style="text-align: center;")
-      button#shareToFB(type="submit",class="btn btn-primary")
-        a(href='#', onclick='postToFb()') Share My Journey on   
-          i.fa.fa-facebook-square.fa-lg
+      a#shareToFB(href='#', onclick='postToFb()',class="btn btn-primary") Share My Journey on   
+        i.fa.fa-facebook-square.fa-lg
+
+  script(src='http://code.jquery.com/jquery-2.1.4.min.js')
+  script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js') 
+  script.
+    var user = !{JSON.stringify(user === undefined ? null : user)};
+
+    if (user == null) {
+      $('#logout').css('display', 'none');
+      $('#logoutBtn').css('display', 'none');
+      $('#request').css('display', 'none'); 
+      $('#requestBtn').css('display', 'none');       
+      $('#user-info').css('display', 'none');  
+      $('#user-stat').css('display', 'none'); 
+    } 
+    else {
+      $('#login').css('display', 'none');
+      $('#loginBtn').css('display', 'none');  
+      $('#user-info').text("UID: " + user.uid);  
+      $('#user-stat').text("FB status: connected");       
+    }
+
+
+    var resultsList = !{JSON.stringify(resultsList === undefined ? null : resultsList)};
+
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId       :'1646694312239569',
+        status      : true, // check login status
+        cookies     : true, // enable cookies to allow the server to access the session
+        xfbml       : true  // parse XFBML
+      });
+    };
+
+    // Load the SDK Asynchronously
+    (function() {
+      var e = document.createElement('script');
+      e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+      e.async = true;
+      document.getElementById('fb-root').appendChild(e);
+    }());
+
+    function getFlightRouteString () {
+      var string = "";
+      resultsList.forEach(function(result){
+        if (string != "") {
+          string = string + " >> ";
+        }
+        string = string + result.code;
+      });
+      return string;
+    }
+
+    function postToFb() {
+      var obj = {
+        method:      'feed',
+        link:        'https://google.com', // to be changed later
+        picture:     'https://domain.tld/75x75.jpg', // to be changed later
+        name:        'My Travel Plans',
+        caption:     'AirTime Application ',
+        description: 'My Flight: ' + getFlightRouteString()// My Flight >> LAX >> SFO >> ALX >> etc
+      };
+      FB.ui(obj);
+    }
