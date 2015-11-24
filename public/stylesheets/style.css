@@ -54,6 +54,13 @@ label{
 	font-weight: bold;
 }
 
+div.scroll{
+	background-color: #ffffff;
+    width: 200px;
+    height: 100px;
+    overflow-y: scroll;
+}
+
 #historyList{
 	list-style: none;
 }

@@ -20,14 +20,15 @@ block content
               input#btnSubmit(type="submit",class="btn btn-primary", value="Submit", name="submit") 
       div.col-md-4.text-center
         legend My Previous Journeys
-        ul#historyList
-          each user in userList
-            if(user.history)
-              each airport in user.history
-                li=airport
-            else 
-              li 
-                h4 Start a new journey and we will keep track of it! 
+        div.scroll
+          ul#historyList
+            each user in userList
+              if(user.history)
+                each airport in user.history
+                  li=airport
+              else 
+                li 
+                  h4 Start a new journey and we will keep track of it! 
     div.row.text-center
       span#user-info
       br
