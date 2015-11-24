@@ -1,0 +1,19 @@
+extends layout
+block content
+  div.container#bodyContainer
+    table.table.table-striped.tablehover
+      thead
+        tr
+          th Code
+          th Name
+          th Temperature
+          th Wind Speed
+          th Delay Status
+      tbody
+        each result in resultsList
+          tr
+            td=result.getCode()
+            td=result.getName()
+            td=result.getTemp()
+            td=result.getWind()
+            td=result.getDelay()

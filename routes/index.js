@@ -112,12 +112,19 @@ var ServerCommService = (function () {
                     res.on('end', function () {
                         try {
                             var parsed = JSON.parse(body);
+                            if (parsed.exception)
+                                throw "FAA exception";
                         }
                         catch (err) {
                             console.error('Unable to parse response as JSON', err);
+                            var newAirport = new AirportOperations.Airport("ERROR");
+                            newAirport.setName("error: Code was invalid or FAA servers could not be queried. Please check code and try again later.");
+                            airportArray.push(newAirport);
                             //console.log(body);
                             count++;
                             skip = true;
+                            if (count >= codeArray.length)
+                                callback(airportArray);
                         }
                         if (!skip) {
                             var newAirport = new AirportOperations.Airport(parsed.IATA);
@@ -492,6 +499,9 @@ var ViewRouter = (function () {
             var dest = req.body.destination;
             pushCode(dest);
             res.redirect("/ResultView");
+        });
+        router.get('/faatest', function (req, res) {
+            req.serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports); res.render('FAATest', { title: 'AirTime', resultsList: this.airports, user: req.user, results: this.airports }); }, ["ANC", "BBB", "ABQ", "LAX"]);
         });
         router.get('/ResultView', checkAuthentication, function (req, res) {
             req.serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports); res.render('ResultView', { title: 'AirTime', resultsList: this.airports, user: req.user, results: this.airports }); }, codeArray);

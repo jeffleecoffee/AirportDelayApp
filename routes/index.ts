@@ -90,7 +90,9 @@ class ViewRouter {
             res.redirect("/ResultView");
         })
 
-
+        router.get('/faatest', function(req, res) {
+		  req.serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports);res.render('FAATest', {title: 'AirTime', resultsList: this.airports,user: req.user,results: this.airports}); },["ANC","BBB","ABQ","LAX"]);
+        });
         router.get('/ResultView', checkAuthentication, function(req, res) {
 		  req.serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports);res.render('ResultView', {title: 'AirTime', resultsList: this.airports,user: req.user,results: this.airports}); },codeArray);
         });
