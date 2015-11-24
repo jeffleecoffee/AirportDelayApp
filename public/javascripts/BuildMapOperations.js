@@ -119,8 +119,8 @@ var AirportOperations;
                     '</div>' +
                     '<h1 id="firstHeading" class="firstHeading">' + this.airport.code + '</h1>' +
                     '<div id="bodyContent">' +
-                    '<h3>Current temperature is ' + this.airport.temp + ' .</h3>' +
-                    '<h3>Current wind speed is ' + this.airport.wind + ' .</h3>' +
+                    '<h3>Current temperature is ' + this.airport.temp + '.</h3>' +
+                    '<h3>Current wind speed is ' + this.airport.wind + '.</h3>' +
                     '<h3>There is no Delay.</h3>' +
                     '</div>' +
                     '</div>';
@@ -132,9 +132,9 @@ var AirportOperations;
                         '</div>' +
                         '<h1 id="firstHeading" class="firstHeading">' + this.airport.code + '</h1>' +
                         '<div id="bodyContent">' +
-                        '<h3>Current temperature is ' + this.airport.temp + ' .</h3>' +
-                        '<h3>Current wind speed is ' + this.airport.wind + ' .</h3>' +
-                        '<h3>There is a min Delay of ' + this.airport.min + ' and max Delay of ' + this.airport.max + ' .</h3>' +
+                        '<h3>Current temperature is ' + this.airport.temp + '.</h3>' +
+                        '<h3>Current wind speed is ' + this.airport.wind + '.</h3>' +
+                        '<h3>There is a min Delay of ' + this.airport.min + ' and max Delay of ' + this.airport.max + '.</h3>' +
                         '</div>' +
                         '</div>';
             }
@@ -145,9 +145,9 @@ var AirportOperations;
                         '</div>' +
                         '<h1 id="firstHeading" class="firstHeading">' + this.airport.code + '</h1>' +
                         '<div id="bodyContent">' +
-                        '<h3>Current temperature is ' + this.airport.temp + ' .</h3>' +
-                        '<h3>Current wind speed is ' + this.airport.wind + ' .</h3>' +
-                        '<h3>There is an average Delay of ' + this.airport.avg + ' .</h3>' +
+                        '<h3>Current temperature is ' + this.airport.temp + '.</h3>' +
+                        '<h3>Current wind speed is ' + this.airport.wind + '.</h3>' +
+                        '<h3>There is an average Delay of ' + this.airport.avg + '.</h3>' +
                         '</div>' +
                         '</div>';
             }
