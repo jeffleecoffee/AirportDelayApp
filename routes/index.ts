@@ -44,6 +44,7 @@ class ViewRouter {
             var db = req.db;
             var collection = db.get("users");
             var letters = /^[A-Za-z]+$/;
+            var airports = new Array();
 
             var start = req.body.start;
             var dest = req.body.destination;
@@ -57,6 +58,7 @@ class ViewRouter {
                         collection.update(
                             {uid: id},
                             {$push: {history: code}});
+                        airports.push(code);
                     }
                     else {
                         res.render('error', {
@@ -82,6 +84,10 @@ class ViewRouter {
 
             var dest = req.body.destination;
             pushCode(dest);
+            console.log("Airports has:");
+            for(var i = 0; i < airports.length; i++) {
+                console.log(airports[i]);
+            }
             
             res.redirect("/ResultView");
         })
