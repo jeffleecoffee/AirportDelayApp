@@ -13,6 +13,7 @@ class ViewRouter {
         var monk = require('monk');
         
         var airports = new Array();
+        var codeArray = new Array();
 
         function checkAuthentication(request, response, next) {
             if (request.isAuthenticated()){
@@ -58,7 +59,7 @@ class ViewRouter {
                         collection.update(
                             {uid: id},
                             {$push: {history: code}});
-                        airports.push(code);
+                        codeArray.push(code);
                     }
                     else {
                         res.render('error', {

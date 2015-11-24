@@ -92,9 +92,7 @@ var ServerCommService = (function () {
         var collection = this.db.get('airports');
         var trueThis = this;
         var skip = false;
-
         codeArray = ["ATL", "ANC", "AUS", "BWI", "BOS", "CLT", "MDW", "ORD", "CVG", "MSP"];
-
         var tempAirportArray = new Array();
         var count = 0;
         var count1 = 0;
@@ -434,6 +432,7 @@ var ViewRouter = (function () {
         var router = express.Router();
         var monk = require('monk');
         var airports = new Array();
+        var codeArray = new Array();
         function checkAuthentication(request, response, next) {
             if (request.isAuthenticated()) {
                 return next();
@@ -469,7 +468,7 @@ var ViewRouter = (function () {
                     if (code.length == 3 && code == code.toUpperCase()
                         && code.match(letters)) {
                         collection.update({ uid: id }, { $push: { history: code } });
-                        airports.push(code);
+                        codeArray.push(code);
                     }
                     else {
                         res.render('error', {
@@ -499,7 +498,7 @@ var ViewRouter = (function () {
             res.redirect("/ResultView");
         });
         router.get('/ResultView', checkAuthentication, function (req, res) {
-            req.serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports); res.render('ResultView', { title: 'AirTime', resultsList: this.airports, user: req.user, results: this.airports }); }, /*["1"]*/ airports);
+            req.serverCommInstance.parseCodes(function (airports) { this.airports = airports; console.log(airports); res.render('ResultView', { title: 'AirTime', resultsList: this.airports, user: req.user, results: this.airports }); }, ["1"]);
         });
         router.get('/MapView', function (req, res) {
             console.log("map");
