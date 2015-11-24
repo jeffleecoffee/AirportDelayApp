@@ -86,13 +86,17 @@ var ServerCommService = (function () {
     }
     // Obtain airport codes from MongoDB and parse
     ServerCommService.prototype.parseCodes = function (callback, codeArray) {
+        console.log("Testing code array:");
+        console.log(codeArray);
         var airportArray = new Array();
         var http = this.http;
         var waitClock = 0;
         var collection = this.db.get('airports');
         var trueThis = this;
         var skip = false;
-        codeArray = ["ATL", "ANC", "AUS", "BWI", "BOS", "CLT", "MDW", "ORD", "CVG", "MSP"];
+        /*
+        codeArray = ["ATL","ANC","AUS","BWI","BOS","CLT","MDW","ORD","CVG","MSP"];
+        */
         var tempAirportArray = new Array();
         var count = 0;
         var count1 = 0;
@@ -447,7 +451,7 @@ var ViewRouter = (function () {
         });
         router.get('/LoadUserHistory', checkAuthentication, function (req, res) {
             var db = req.db;
-            var collection = db.get('users');
+            var collection = db.get('userhistory');
             /* Test Data */
             /*collection.update({"uid":req.user.uid},{$set:{history:["LAX","BOS","SFO","ATL"]}});*/
             collection.find({ "uid": req.user.uid }, { _id: 0, history: 1 }, function (e, docs) {
@@ -457,7 +461,7 @@ var ViewRouter = (function () {
         router.post('/savecodes', function (req, res) {
             var id = req.user.uid;
             var db = req.db;
-            var collection = db.get("users");
+            var collection = db.get("userhistory");
             var letters = /^[A-Za-z]+$/;
             var airports = new Array();
             var start = req.body.start;
@@ -467,14 +471,11 @@ var ViewRouter = (function () {
                 if (code != undefined) {
                     if (code.length == 3 && code == code.toUpperCase()
                         && code.match(letters)) {
-                        collection.update({ uid: id }, { $push: { history: code } });
+                        collection.update({ uid: id }, { $push: { history: code } }, { upsert: true });
                         codeArray.push(code);
                     }
                     else {
-                        res.render('error', {
-                            message: "You have inserted an invalid airport code!",
-                            error: {}
-                        });
+                        Window.alert("Invalid airport code inputted!");
                     }
                 }
             }
@@ -491,10 +492,6 @@ var ViewRouter = (function () {
             }
             var dest = req.body.destination;
             pushCode(dest);
-            console.log("Airports has:");
-            for (var i = 0; i < airports.length; i++) {
-                console.log(airports[i]);
-            }
             res.redirect("/ResultView");
         });
         router.get('/ResultView', checkAuthentication, function (req, res) {
