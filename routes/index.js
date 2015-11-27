@@ -469,6 +469,7 @@ var ViewRouter = (function () {
             var airports = new Array();
             var start = req.body.start;
             var dest = req.body.destination;
+			codeArray = new Array()
             function pushCode(input) {
                 var code = input;
                 if (code != undefined) {

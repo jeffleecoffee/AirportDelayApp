@@ -112,7 +112,8 @@ var ServerCommService = (function () {
                     res.on('end', function () {
                         try {
                             var parsed = JSON.parse(body);
-                            if (parsed.exception)
+							//parsed = {Exception: "test"};
+                            if (parsed.Exception)
                                 throw "FAA exception";
                         }
                         catch (err) {
